@@ -16,3 +16,7 @@ accessible field com/mojang/math/Matrix4f m30 F
 accessible field com/mojang/math/Matrix4f m31 F
 accessible field com/mojang/math/Matrix4f m32 F
 accessible field com/mojang/math/Matrix4f m33 F
+extendable class net/minecraft/client/renderer/RenderType$CompositeRenderType
+accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType <init> (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;IZZLnet/minecraft/client/renderer/RenderType$CompositeState;)V
+accessible field net/minecraft/client/renderer/RenderStateShard setupState Ljava/lang/Runnable;
+mutable field net/minecraft/client/renderer/RenderStateShard setupState Ljava/lang/Runnable;
