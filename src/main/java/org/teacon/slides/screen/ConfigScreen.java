@@ -33,15 +33,16 @@ public final class ConfigScreen extends Screen {
     private String host;
     private int port;
     private int viewDistance;
+    private boolean isChanged;
 
     public ConfigScreen(Screen parent) {
         super(Component.literal(""));
         this.parent = parent;
-        Config.refreshProperties();
         this.proxySwitch = Config.isProxySwitch();
         this.host = Config.getHost();
         this.port = Config.getPort();
         this.viewDistance = Config.getViewDistance();
+        this.isChanged = false;
     }
 
     @Override
@@ -49,6 +50,7 @@ public final class ConfigScreen extends Screen {
         final Button buttonProxySwitch = Button.builder(Config.isProxySwitch() ? PROXY_SWITCH_ON : PROXY_SWITCH_OFF, button -> {
             this.proxySwitch = !this.proxySwitch;
             button.setMessage(this.proxySwitch ? PROXY_SWITCH_ON : PROXY_SWITCH_OFF);
+            this.isChanged = true;
         }).pos(this.width - SQUARE_SIZE - BUTTON_WIDTH, (SQUARE_SIZE + TEXT_FIELD_PADDING) + SQUARE_SIZE).size(BUTTON_WIDTH, BUTTON_HEIGHT).build();
 
         final EditBox textFieldHost = new EditBox(this.font, width - (SQUARE_SIZE * 10) - BUTTON_WIDTH, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 2 + SQUARE_SIZE, BUTTON_WIDTH - TEXT_PADDING + (SQUARE_SIZE * 9), SQUARE_SIZE, CONFIG_HOST);
@@ -62,6 +64,7 @@ public final class ConfigScreen extends Screen {
             if (StringUtils.isNotBlank(text) && text.length() <= MAX_HOST_LENGTH) {
                 this.host = text;
                 textFieldHost.setTextColor(0XFFFFFF);
+                this.isChanged = true;
             } else {
                 textFieldHost.setTextColor(0XFF0000);
             }
@@ -81,6 +84,7 @@ public final class ConfigScreen extends Screen {
                     if (temp >= 1024 && temp <= 65535) {
                         this.port = temp;
                         textFieldPort.setTextColor(0XFFFFFF);
+                        this.isChanged = true;
                     } else {
                         textFieldPort.setTextColor(0xFF0000);
                     }
@@ -106,6 +110,7 @@ public final class ConfigScreen extends Screen {
                     if (temp > 0 && temp <= Config.MAX_VIEW_DISTANCE) {
                         this.viewDistance = temp;
                         sliderViewDistance.setTextColor(0XFFFFFF);
+                        this.isChanged = true;
                     } else {
                         sliderViewDistance.setTextColor(0xFF0000);
                     }
@@ -138,11 +143,13 @@ public final class ConfigScreen extends Screen {
     public void onClose() {
         if (this.minecraft != null) {
             this.minecraft.setScreen(parent);
-            Config.setProxySwitch(this.proxySwitch);
-            Config.setHost(this.host);
-            Config.setPort(this.port);
-            Config.setViewDistance(this.viewDistance);
-            Config.saveToFile();
+            if (this.isChanged) {
+                Config.setProxySwitch(this.proxySwitch);
+                Config.setHost(this.host);
+                Config.setPort(this.port);
+                Config.setViewDistance(this.viewDistance);
+                Config.saveToFile();
+            }
             Config.refreshProperties();
         }
     }
