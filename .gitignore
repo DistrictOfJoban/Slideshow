@@ -31,8 +31,10 @@ bin/
 # fabric
 
 run/
-latest.log
-mappings
-BlockEntityExtension.java
-RenderUtils.java
-.architectury-transformer/
+
+# java
+
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr

@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "slide_show",
+	"version": "${version}",
+	"name": "Slide Show",
+	"description": "Minecraft mod, adding a projector that can display online images.",
+	"authors": [
+		"TeaConMC", "BloCamLimb", "3TUSK", "ustc-zzzz", "Jonathan", "zbx1425","AIDA64S"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/slideshow-fabric",
+		"sources": "https://github.com/AIDA64S/Slideshow"
+	},
+	"license": "BSD-3-Clause",
+	"icon": "icon.png",
+	"environment": "*",
+	"accessWidener": "slide.accesswidener",
+	"entrypoints": {
+		"main": [
+			"org.teacon.slides.Slideshow"
+		],
+		"client": [
+			"org.teacon.slides.SlideshowClient"
+		],
+		"modmenu": [
+			"org.teacon.slides.SlideshowMenu"
+		]
+	},
+	"mixins": [
+		"slides.mixins.json"
+	],
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": ["1.20.4", "1.20.5", "1.20.6"],
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}

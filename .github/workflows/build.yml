@@ -3,10 +3,6 @@ on: [ pull_request, push ]
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        minecraft: [ 1.17.1, 1.18.2, 1.19.2 ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,13 +12,14 @@ jobs:
       - name: Setup JDK 17
         uses: actions/setup-java@v1
         with:
+          distribution: 'temurin'
           java-version: 17
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Build ${{ matrix.minecraft }}
-        run: ./gradlew build -PbuildVersion="${{ matrix.minecraft }}" --continue
+      - name: Build
+        run: ./gradlew build
       - name: Capture release artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Fabric and Forge
-          path: build/release/
+          path: build/libs/

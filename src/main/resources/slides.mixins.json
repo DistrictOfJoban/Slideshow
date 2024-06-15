@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "org.teacon.slides.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [],
+	"client": ["NativeImageMixin"],
+	"server": [],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
