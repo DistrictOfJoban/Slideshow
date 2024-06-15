@@ -72,3 +72,12 @@ remapJar {
     mustRunAfter(shadowJar)
     inputFile = file(shadowJar.archivePath)
 }
+
+tasks.register('moveFile') {
+    copy {
+        outputs.upToDateWhen { false }
+        from "build/libs/Slideshow-1.0.3.jar"
+        into "build/release/"
+        rename "Slideshow-1.0.3.jar", "Slideshow-fabric-1.20.4-1.0.3.jar"
+    }
+}
