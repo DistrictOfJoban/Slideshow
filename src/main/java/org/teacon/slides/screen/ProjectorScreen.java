@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
 import org.teacon.slides.Slideshow;
@@ -71,7 +72,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
 
     private String mImgUrl;
     private int mImageColor;
-    private Vector2f mImageSize;
+    private Vec2 mImageSize;
     private Vector3f mImageOffset;
     private boolean mDoubleSided;
     private boolean mKeepAspectRatio;
@@ -106,7 +107,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
             rotation = projectorBlockEntity.getBlockState().getValue(ProjectorBlock.ROTATION);
             this.mImgUrl = this.data.getLocation();
             this.mImageColor = this.data.getColor();
-            this.mImageSize = new Vector2f(this.data.getWidth(), this.data.getHeight());
+            this.mImageSize = new Vec2(this.data.getWidth(), this.data.getHeight());
             this.mImageOffset = new Vector3f(this.data.getOffsetX(), this.data.getOffsetY(), this.data.getOffsetZ());
             this.mDoubleSided = this.data.isDoubleSided();
             this.mKeepAspectRatio = this.data.isKeepAspectRatio();
@@ -163,7 +164,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 EditBox input = new EditBox(this.font, this.leftPos + 30, this.topPos + 51, 46, 16, WIDTH_TEXT);
                 input.setResponder(text -> {
                     try {
-                        Vector2f newSize = new Vector2f(parseFloatOrDefault(text, 1), this.mImageSize.y);
+                        Vec2 newSize = new Vec2(parseFloatOrDefault(text, 1), this.mImageSize.y);
                         updateOffsetByDimension(newSize);
                         this.mInvalidWidth = false;
                     } catch (Exception e) {
@@ -182,7 +183,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 EditBox input = new EditBox(this.font, this.leftPos + 100, this.topPos + 51, 46, 16, HEIGHT_TEXT);
                 input.setResponder(text -> {
                     try {
-                        Vector2f newSize = new Vector2f(this.mImageSize.x, parseFloatOrDefault(text, 1));
+                        Vec2 newSize = new Vec2(this.mImageSize.x, parseFloatOrDefault(text, 1));
                         updateOffsetByDimension(newSize);
                         this.mInvalidHeight = false;
                     } catch (Exception e) {
@@ -349,17 +350,17 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                     float aspect = slide == null ? Float.NaN : slide.getImageAspectRatio();
                     if (!Float.isNaN(aspect)) {
                         if (mSyncAspectRatio == SyncAspectRatio.SYNC_WIDTH_WITH_HEIGHT) {
-                            Vector2f newSizeByHeight = new Vector2f(mImageSize.y * aspect, mImageSize.y);
+                            Vec2 newSizeByHeight = new Vec2(mImageSize.y * aspect, mImageSize.y);
                             updateOffsetByDimension(newSizeByHeight);
                             if (!mWidthInput.get().isFocused()) {
-                                mWidthInput.get().setValue(toOptionalSignedString(newSizeByHeight.x()));
+                                mWidthInput.get().setValue(toOptionalSignedString(newSizeByHeight.x));
                             }
                         }
                         if (mSyncAspectRatio == SyncAspectRatio.SYNC_HEIGHT_WITH_WIDTH) {
-                            Vector2f newSizeByWidth = new Vector2f(mImageSize.x, mImageSize.x / aspect);
+                            Vec2 newSizeByWidth = new Vec2(mImageSize.x, mImageSize.x / aspect);
                             updateOffsetByDimension(newSizeByWidth);
                             if (!mHeightInput.get().isFocused()) {
-                                mHeightInput.get().setValue(toOptionalSignedString(newSizeByWidth.y()));
+                                mHeightInput.get().setValue(toOptionalSignedString(newSizeByWidth.y));
                             }
                         }
                         mSyncAspectRatio = SyncAspectRatio.SYNCED;
@@ -489,10 +490,10 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 networkData.setColor(this.mImageColor);
             }
             if (!this.mInvalidWidth) {
-                networkData.setWidth(this.mImageSize.x());
+                networkData.setWidth(this.mImageSize.x);
             }
             if (!this.mInvalidHeight) {
-                networkData.setHeight(this.mImageSize.y());
+                networkData.setHeight(this.mImageSize.y);
             }
             if (!this.mInvalidOffsetX) {
                 networkData.setOffsetX(this.mImageOffset.x());
@@ -526,7 +527,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         mRotation = newRotation;
     }
 
-    private void updateOffsetByDimension(Vector2f newDimension) {
+    private void updateOffsetByDimension(Vec2 newDimension) {
         if (!mInvalidOffsetX && !mInvalidOffsetY && !mInvalidOffsetZ) {
             Vector3f absolute = relativeToAbsolute(mImageOffset, mImageSize, mRotation);
             Vector3f newRelative = absoluteToRelative(absolute, newDimension, mRotation);
@@ -570,19 +571,19 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         return Float.isNaN(f) ? String.valueOf(f) : Math.copySign(1.0F, f) <= 0 ? "-" + Math.round(0.0F - f * 1.0E3F) / 1.0E3F : "+" + Math.round(f * 1.0E3F) / 1.0E3F;
     }
 
-    private static Vector3f relativeToAbsolute(Vector3f relatedOffset, Vector2f size, ProjectorBlock.InternalRotation rotation) {
+    private static Vector3f relativeToAbsolute(Vector3f relatedOffset, Vec2 size, ProjectorBlock.InternalRotation rotation) {
         Vector4f center = new Vector4f(0.5F * size.x, 0.0F, 0.5F * size.y, 1.0F);
         center.transform(Matrix4f.createTranslateMatrix(relatedOffset.x(), -relatedOffset.z(), relatedOffset.y()));
-        center.transform(Matrix4f.createTranslateMatrix(-0.5F, 0.0F, 0.5F - size.y()));
+        center.transform(Matrix4f.createTranslateMatrix(-0.5F, 0.0F, 0.5F - size.y));
         rotation.transform(center);
         return new Vector3f(center.x() / center.w(), center.y() / center.w(), center.z() / center.w());
     }
 
-    private static Vector3f absoluteToRelative(Vector3f absoluteOffset, Vector2f size, ProjectorBlock.InternalRotation rotation) {
+    private static Vector3f absoluteToRelative(Vector3f absoluteOffset, Vec2 size, ProjectorBlock.InternalRotation rotation) {
         Vector4f center = new Vector4f(absoluteOffset);
         rotation.invert().transform(center);
         center.transform(Matrix4f.createTranslateMatrix(0.5F, 0.0F, -0.5F + size.y));
-        center.transform(Matrix4f.createTranslateMatrix(-0.5F * size.x(), 0.0F, -0.5F * size.y));
+        center.transform(Matrix4f.createTranslateMatrix(-0.5F * size.x, 0.0F, -0.5F * size.y));
         return new Vector3f(center.x() / center.w(), center.z() / center.w(), -center.y() / center.w());
     }
 
