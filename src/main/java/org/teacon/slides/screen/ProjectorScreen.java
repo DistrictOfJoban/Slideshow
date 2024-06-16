@@ -1,9 +1,9 @@
 package org.teacon.slides.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -392,19 +392,20 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     }
 
     @Override
-    public void renderBg(GuiGraphics gui, float partialTicks, int mouseX, int mouseY) {
+    public void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
         if (this.data != null) {
+            renderBackground(stack);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, GUI_TEXTURE);
-            gui.blit(GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+            blit(stack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
             if (this.mImageUrlStatus == ImageUrlStatus.INVALID) {
-                gui.blit(GUI_TEXTURE, this.leftPos + 9, this.topPos + 27, 179, 53, 18, 19);
+                blit(stack, this.leftPos + 9, this.topPos + 27, 179, 53, 18, 19);
             }
         }
     }
 
     @Override
-    public void renderLabels(@Nonnull GuiGraphics gui, int mouseX, int mouseY) {
+    public void renderLabels(@Nonnull PoseStack gui, int mouseX, int mouseY) {
         if (this.data != null) {
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
@@ -414,12 +415,12 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
             if (alpha > 0) {
                 int red = (this.mImageColor >> 16) & 255, green = (this.mImageColor >> COLOR_MAX_LENGTH) & 255, blue = this.mImageColor & 255;
                 RenderSystem.setShaderColor(red / 255.0F, green / 255.0F, blue / 255.0F, alpha / 255.0F);
-                gui.blit(GUI_TEXTURE, 38, 157, 180, 194, 10, 10);
-                gui.blit(GUI_TEXTURE, 82, 185, 180, 194, 17, 17);
+                blit(gui, 38, 157, 180, 194, 10, 10);
+                blit(gui, 82, 185, 180, 194, 17, 17);
             }
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            gui.blit(GUI_TEXTURE, 82, 185, 202, 194 - this.mRotation.ordinal() * 20, 17, 17);
+            blit(gui, 82, 185, 202, 194 - this.mRotation.ordinal() * 20, 17, 17);
 
             drawCenteredStringWithoutShadow(gui, this.font, IMAGE_TEXT, 12);
             drawCenteredStringWithoutShadow(gui, this.font, OFFSET_TEXT, 86);
@@ -427,27 +428,27 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
 
             int offsetX = mouseX - this.leftPos, offsetY = mouseY - this.topPos;
             if (offsetX >= 9 && offsetY >= 27 && offsetX < 27 && offsetY < 46) {
-                gui.renderTooltip(this.font, URL_TEXT, offsetX, offsetY);
+                renderTooltip(gui, URL_TEXT, offsetX, offsetY);
             } else if (offsetX >= 34 && offsetY >= 153 && offsetX < 52 && offsetY < 172) {
-                gui.renderTooltip(this.font, COLOR_TEXT, offsetX, offsetY);
+                renderTooltip(gui, COLOR_TEXT, offsetX, offsetY);
             } else if (offsetX >= 9 && offsetY >= 49 && offsetX < 27 && offsetY < 68) {
-                gui.renderTooltip(this.font, WIDTH_TEXT, offsetX, offsetY);
+                renderTooltip(gui, WIDTH_TEXT, offsetX, offsetY);
             } else if (offsetX >= 79 && offsetY >= 49 && offsetX < 97 && offsetY < 68) {
-                gui.renderTooltip(this.font, HEIGHT_TEXT, offsetX, offsetY);
+                renderTooltip(gui, HEIGHT_TEXT, offsetX, offsetY);
             } else if (offsetX >= 149 && offsetY >= 49 && offsetX < 167 && offsetY < 68) {
-                gui.renderTooltip(this.font, KEEP_ASPECT_RATIO_TEXT, offsetX, offsetY);
+                renderTooltip(gui, KEEP_ASPECT_RATIO_TEXT, offsetX, offsetY);
             } else if (offsetX >= 9 && offsetY >= 101 && offsetX < 27 && offsetY < 120) {
-                gui.renderTooltip(this.font, OFFSET_X_TEXT, offsetX, offsetY);
+                renderTooltip(gui, OFFSET_X_TEXT, offsetX, offsetY);
             } else if (offsetX >= 63 && offsetY >= 101 && offsetX < 81 && offsetY < 120) {
-                gui.renderTooltip(this.font, OFFSET_Y_TEXT, offsetX, offsetY);
+                renderTooltip(gui, OFFSET_Y_TEXT, offsetX, offsetY);
             } else if (offsetX >= 117 && offsetY >= 101 && offsetX < 135 && offsetY < 120) {
-                gui.renderTooltip(this.font, OFFSET_Z_TEXT, offsetX, offsetY);
+                renderTooltip(gui, OFFSET_Z_TEXT, offsetX, offsetY);
             } else if (offsetX >= 117 && offsetY >= 153 && offsetX < 135 && offsetY < 172) {
-                gui.renderTooltip(this.font, FLIP_TEXT, offsetX, offsetY);
+                renderTooltip(gui, FLIP_TEXT, offsetX, offsetY);
             } else if (offsetX >= 142 && offsetY >= 153 && offsetX < 160 && offsetY < 172) {
-                gui.renderTooltip(this.font, ROTATE_TEXT, offsetX, offsetY);
+                renderTooltip(gui, ROTATE_TEXT, offsetX, offsetY);
             } else if (offsetX >= 9 && offsetY >= 153 && offsetX < 27 && offsetY < 172) {
-                gui.renderTooltip(this.font, SINGLE_DOUBLE_SIDED_TEXT, offsetX, offsetY);
+                renderTooltip(gui, SINGLE_DOUBLE_SIDED_TEXT, offsetX, offsetY);
             }
         }
 
@@ -550,8 +551,8 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         mSyncAspectRatio = mKeepAspectRatio ? SyncAspectRatio.SYNC_WIDTH_WITH_HEIGHT : SyncAspectRatio.SYNCED;
     }
 
-    private static void drawCenteredStringWithoutShadow(GuiGraphics gui, Font renderer, Component string, int y) {
-        gui.drawString(renderer, string.getString(), (88 - renderer.width(string) / 2), y, 0x404040, false);
+    private static void drawCenteredStringWithoutShadow(PoseStack gui, Font renderer, Component string, int y) {
+        renderer.draw(gui, string.getString(), (88 - renderer.width(string) / 2.0F), y, 0x404040);
     }
 
     private static float parseFloatOrDefault(String text, float defaultValue) {
@@ -606,11 +607,12 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         }
 
         @Override
-        public void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(PoseStack gui, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
+            RenderSystem.setShaderTexture(0, GUI_TEXTURE);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-            gui.blit(GUI_TEXTURE, getX(), getY(), u, v, width, height);
+            blit(gui, getX(), getY(), u, v, width, height);
         }
 
         @Override

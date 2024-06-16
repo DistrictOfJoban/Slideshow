@@ -1,6 +1,6 @@
 package org.teacon.slides.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -129,14 +129,14 @@ public final class ConfigScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        renderBackground(guiGraphics);
-        guiGraphics.drawString(this.font, CONFIG_TEXT, (this.width - this.font.width(CONFIG_TEXT)) / 2, TEXT_PADDING, ARGB_WHITE, true);
-        guiGraphics.drawString(this.font, PROXY_SWITCH, SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE, true);
-        guiGraphics.drawString(this.font, CONFIG_HOST, SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 2 + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE, true);
-        guiGraphics.drawString(this.font, CONFIG_PORT, SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 3 + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE, true);
-        guiGraphics.drawString(this.font, CONFIG_VIEW_DISTANCE, SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 4 + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE, true);
-        super.render(guiGraphics, mouseX, mouseY, delta);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+        renderBackground(poseStack);
+        this.font.draw(poseStack, CONFIG_TEXT.getString(), (this.width - this.font.width(CONFIG_TEXT)) / 2.0F, TEXT_PADDING, ARGB_WHITE);
+        this.font.draw(poseStack, PROXY_SWITCH.getString(), SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE);
+        this.font.draw(poseStack, CONFIG_HOST.getString(), SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 2 + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE);
+        this.font.draw(poseStack, CONFIG_PORT.getString(), SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 3 + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE);
+        this.font.draw(poseStack, CONFIG_VIEW_DISTANCE.getString(), SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 4 + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE);
+        super.render(poseStack, mouseX, mouseY, delta);
     }
 
     @Override

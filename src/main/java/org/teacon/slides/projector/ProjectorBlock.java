@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -46,7 +47,7 @@ public final class ProjectorBlock extends Block implements EntityBlock {
     private static final VoxelShape SHAPE_WITH_BASE_DOWN = Block.box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0);
 
     public ProjectorBlock() {
-        super(BlockBehaviour.Properties.of().strength(20F).lightLevel(blockState -> 15).noCollission());
+        super(BlockBehaviour.Properties.of(Material.METAL).strength(20F).lightLevel(blockState -> 15).noCollission());
         registerDefaultState(defaultBlockState().setValue(FACING, Direction.EAST).setValue(POWERED, false).setValue(BASE, Direction.DOWN).setValue(ROTATION, InternalRotation.NONE));
     }
 

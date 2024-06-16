@@ -26,7 +26,7 @@ public final class ProjectorContainerMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@Nonnull Player player) {
-        Level level = player.level();
+        Level level = player.getLevel();
         if (!level.isLoaded(this.blockPos)) {
             return false;
         }
