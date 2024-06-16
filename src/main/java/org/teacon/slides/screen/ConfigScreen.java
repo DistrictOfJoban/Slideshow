@@ -130,7 +130,7 @@ public final class ConfigScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        renderBackground(guiGraphics, mouseX, mouseY, delta);
+        renderBackground(guiGraphics);
         guiGraphics.drawString(this.font, CONFIG_TEXT, (this.width - this.font.width(CONFIG_TEXT)) / 2, TEXT_PADDING, ARGB_WHITE, true);
         guiGraphics.drawString(this.font, PROXY_SWITCH, SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE, true);
         guiGraphics.drawString(this.font, CONFIG_HOST, SQUARE_SIZE, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 2 + SQUARE_SIZE + TEXT_PADDING, ARGB_WHITE, true);

@@ -454,7 +454,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         if (this.data != null) {
             if (this.mWidthInput.get().isMouseOver(mouseX, mouseY)) {
                 if (!this.mInvalidWidth) {
@@ -474,7 +474,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 }
             }
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override
