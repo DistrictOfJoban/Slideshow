@@ -36,7 +36,10 @@ public final class Slideshow implements ModInitializer {
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation("projector"), PROJECTOR_BLOCK_ENTITY);
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> content.accept(PROJECTOR_BLOCK_ITEM));
         Registry.register(BuiltInRegistries.MENU, new ResourceLocation(ID, "projector"), PROJECTOR_SCREEN_HANDLER);
-        ServerPlayNetworking.registerGlobalReceiver(UPDATE_CHANNEL, ((server, player, handler, buf, responseSender) -> server.execute(() -> new UpdatePacket(buf).handle(player))));
+        ServerPlayNetworking.registerGlobalReceiver(UPDATE_CHANNEL, ((server, player, handler, buf, responseSender) -> {
+            UpdatePacket updatePacket = new UpdatePacket(buf);
+            server.execute(() -> updatePacket.handle(player));
+        }));
         LOGGER.info("Slideshow initialized");
     }
 }
