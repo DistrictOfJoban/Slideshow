@@ -394,6 +394,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     @Override
     public void renderBg(GuiGraphics gui, float partialTicks, int mouseX, int mouseY) {
         if (this.data != null) {
+            renderBackground(gui);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, GUI_TEXTURE);
             gui.blit(GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
