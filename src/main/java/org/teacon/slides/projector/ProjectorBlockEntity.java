@@ -1,6 +1,8 @@
 package org.teacon.slides.projector;
 
 import com.mojang.datafixers.DSL;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
@@ -18,8 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.teacon.slides.Slideshow;
 
 import javax.annotation.Nonnull;
@@ -115,15 +115,15 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         var state = getBlockState();
         var direction = state.getValue(BlockStateProperties.FACING);
         var rotation = state.getValue(ProjectorBlock.ROTATION);
-        pose.translate(0.5f, 0.5f, 0.5f);
-        pose.rotate(direction.getRotation());
-        normal.rotate(direction.getRotation());
-        pose.translate(0.0f, 0.5f, 0.0f);
+        pose.multiplyWithTranslation(0.5f, 0.5f, 0.5f);
+        pose.multiply(direction.getRotation());
+        normal.mul(direction.getRotation());
+        pose.multiplyWithTranslation(0.0f, 0.5f, 0.0f);
         rotation.transform(pose);
         rotation.transform(normal);
-        pose.translate(-0.5F, 0.0F, 0.5F - this.projectorBlockEntityData.getHeight());
-        pose.translate(this.getProjectorBlockEntityData().getOffsetX(), -this.getProjectorBlockEntityData().getOffsetZ(), this.projectorBlockEntityData.getOffsetY());
-        pose.scale(this.projectorBlockEntityData.getWidth(), 1.0F, this.projectorBlockEntityData.getHeight());
+        pose.multiplyWithTranslation(-0.5F, 0.0F, 0.5F - this.projectorBlockEntityData.getHeight());
+        pose.multiplyWithTranslation(this.getProjectorBlockEntityData().getOffsetX(), -this.getProjectorBlockEntityData().getOffsetZ(), this.projectorBlockEntityData.getOffsetY());
+        pose.multiply(Matrix4f.createScaleMatrix(this.projectorBlockEntityData.getWidth(), 1.0F, this.projectorBlockEntityData.getHeight()));
     }
 
     public static class ProjectorBlockEntityData {

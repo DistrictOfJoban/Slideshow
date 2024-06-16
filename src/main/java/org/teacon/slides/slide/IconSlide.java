@@ -1,11 +1,11 @@
 package org.teacon.slides.slide;
 
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.teacon.slides.Slideshow;
 import org.teacon.slides.renderer.SlideRenderType;
 

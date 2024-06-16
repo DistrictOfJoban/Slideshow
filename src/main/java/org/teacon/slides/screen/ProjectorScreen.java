@@ -2,6 +2,9 @@ package org.teacon.slides.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -18,10 +21,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.StringUtils;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 import org.teacon.slides.Slideshow;
 import org.teacon.slides.packet.UpdatePacket;
@@ -573,17 +572,17 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
 
     private static Vector3f relativeToAbsolute(Vector3f relatedOffset, Vector2f size, ProjectorBlock.InternalRotation rotation) {
         Vector4f center = new Vector4f(0.5F * size.x, 0.0F, 0.5F * size.y, 1.0F);
-        center.mul(new Matrix4f().translate(relatedOffset.x(), -relatedOffset.z(), relatedOffset.y()));
-        center.mul(new Matrix4f().translate(-0.5F, 0.0F, 0.5F - size.y()));
+        center.transform(Matrix4f.createTranslateMatrix(relatedOffset.x(), -relatedOffset.z(), relatedOffset.y()));
+        center.transform(Matrix4f.createTranslateMatrix(-0.5F, 0.0F, 0.5F - size.y()));
         rotation.transform(center);
         return new Vector3f(center.x() / center.w(), center.y() / center.w(), center.z() / center.w());
     }
 
     private static Vector3f absoluteToRelative(Vector3f absoluteOffset, Vector2f size, ProjectorBlock.InternalRotation rotation) {
-        Vector4f center = new Vector4f(absoluteOffset, 1.0F);
+        Vector4f center = new Vector4f(absoluteOffset);
         rotation.invert().transform(center);
-        center.mul(new Matrix4f().translate(0.5F, 0.0F, -0.5F + size.y()));
-        center.mul(new Matrix4f().translate(-0.5F * size.x, 0.0F, -0.5F * size.y));
+        center.transform(Matrix4f.createTranslateMatrix(0.5F, 0.0F, -0.5F + size.y));
+        center.transform(Matrix4f.createTranslateMatrix(-0.5F * size.x(), 0.0F, -0.5F * size.y));
         return new Vector3f(center.x() / center.w(), center.z() / center.w(), -center.y() / center.w());
     }
 
@@ -607,16 +606,16 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         }
 
         @Override
-        public void renderWidget(PoseStack gui, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack gui, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.setShaderTexture(0, GUI_TEXTURE);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-            blit(gui, getX(), getY(), u, v, width, height);
+            blit(gui, this.x, this.y, u, v, width, height);
         }
 
         @Override
-        protected void updateWidgetNarration(NarrationElementOutput output) {
+        public void updateNarration(NarrationElementOutput output) {
             output.add(NarratedElementType.TITLE, msg);
         }
     }

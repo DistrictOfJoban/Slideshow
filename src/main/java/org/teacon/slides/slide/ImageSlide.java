@@ -1,8 +1,8 @@
 package org.teacon.slides.slide;
 
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.MultiBufferSource;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.teacon.slides.texture.TextureProvider;
 
 public final class ImageSlide implements Slide {

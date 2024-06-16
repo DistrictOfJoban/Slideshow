@@ -47,11 +47,11 @@ public final class ConfigScreen extends Screen {
 
     @Override
     protected void init() {
-        final Button buttonProxySwitch = Button.builder(Config.isProxySwitch() ? PROXY_SWITCH_ON : PROXY_SWITCH_OFF, button -> {
+        final Button buttonProxySwitch = new Button(this.width - SQUARE_SIZE - BUTTON_WIDTH, (SQUARE_SIZE + TEXT_FIELD_PADDING) + SQUARE_SIZE, BUTTON_WIDTH, BUTTON_HEIGHT, Config.isProxySwitch() ? PROXY_SWITCH_ON : PROXY_SWITCH_OFF, button -> {
             this.proxySwitch = !this.proxySwitch;
             button.setMessage(this.proxySwitch ? PROXY_SWITCH_ON : PROXY_SWITCH_OFF);
             this.isChanged = true;
-        }).pos(this.width - SQUARE_SIZE - BUTTON_WIDTH, (SQUARE_SIZE + TEXT_FIELD_PADDING) + SQUARE_SIZE).size(BUTTON_WIDTH, BUTTON_HEIGHT).build();
+        });
 
         final EditBox textFieldHost = new EditBox(this.font, width - (SQUARE_SIZE * 10) - BUTTON_WIDTH, (SQUARE_SIZE + TEXT_FIELD_PADDING) * 2 + SQUARE_SIZE, BUTTON_WIDTH - TEXT_PADDING + (SQUARE_SIZE * 9), SQUARE_SIZE, CONFIG_HOST);
         textFieldHost.setValue(Config.getHost());

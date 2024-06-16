@@ -1,5 +1,8 @@
 package org.teacon.slides.projector;
 
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector4f;
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -24,13 +27,11 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector4f;
 import org.teacon.slides.Slideshow;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -157,8 +158,23 @@ public final class ProjectorBlock extends Block implements EntityBlock {
         InternalRotation(float m00, float m10, float m20, float m30,
                          float m01, float m11, float m21, float m31,
                          float m02, float m12, float m22, float m32) {
-            mMatrix = new Matrix4f(m00, m01, m02, 0F, m10, m11, m12, 0F, m20, m21, m22, 0F, m30, m31, m32, 1F);
-            mNormal = new Matrix3f(m00, m01, m02, m10, m11, m12, m20, m21, m22);
+            float[] matrix4f = new float[]{
+                    m00, m01, m02, 0F,
+                    m10, m11, m12, 0F,
+                    m20, m21, m22, 0F,
+                    m30, m31, m32, 1F
+            };
+            float[] matrix3f = new float[]{
+                    m00, m01, m02,
+                    m10, m11, m12,
+                    m20, m21, m22
+            };
+            FloatBuffer floatBuffer4f = FloatBuffer.wrap(matrix4f);
+            FloatBuffer floatBuffer3f = FloatBuffer.wrap(matrix3f);
+            mMatrix = new Matrix4f();
+            mNormal = new Matrix3f();
+            mMatrix.load(floatBuffer4f);
+            mNormal.load(floatBuffer3f);
             mSerializedName = name().toLowerCase(Locale.ROOT);
         }
 
@@ -179,11 +195,11 @@ public final class ProjectorBlock extends Block implements EntityBlock {
         }
 
         public void transform(Vector4f vector) {
-            vector.mul(mMatrix);
+            vector.transform(mMatrix);
         }
 
         public void transform(Matrix4f poseMatrix) {
-            poseMatrix.mul(mMatrix);
+            poseMatrix.multiply(mMatrix);
         }
 
         public void transform(Matrix3f normalMatrix) {

@@ -1,12 +1,12 @@
 package org.teacon.slides.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.teacon.slides.config.Config;
 import org.teacon.slides.projector.ProjectorBlock;
 import org.teacon.slides.projector.ProjectorBlockEntity;
