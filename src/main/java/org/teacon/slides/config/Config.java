@@ -71,7 +71,7 @@ public final class Config {
     public static void refreshProperties() {
         Slideshow.LOGGER.info("Refreshed Slideshow mod config");
         try {
-            final JsonObject jsonConfig = JsonParser.parseString(String.join("", Files.readAllLines(CONFIG_PATH))).getAsJsonObject();
+            final JsonObject jsonConfig =new JsonParser().parse(String.join("", Files.readAllLines(CONFIG_PATH))).getAsJsonObject();
             try {
                 proxySwitch = jsonConfig.get(PROXY_SWITCH).getAsBoolean();
             } catch (Exception ignored) {

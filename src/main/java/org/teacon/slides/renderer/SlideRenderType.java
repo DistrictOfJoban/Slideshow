@@ -1,57 +1,62 @@
 package org.teacon.slides.renderer;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import org.teacon.slides.Slideshow;
 
-public final class SlideRenderType extends RenderType.CompositeRenderType {
-    public SlideRenderType(int texture) {
-        super(Slideshow.ID, DefaultVertexFormat.BLOCK,
-                VertexFormat.Mode.QUADS, 256, false, true,
-                CompositeState.builder()
-                        .setShaderState(RENDERTYPE_TEXT_SEE_THROUGH_SHADER)
-                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                        .setDepthTestState(LEQUAL_DEPTH_TEST)
-                        .setCullState(CULL)
-                        .setLightmapState(LIGHTMAP)
-                        .setOverlayState(NO_OVERLAY)
-                        .setLayeringState(NO_LAYERING)
-                        .setOutputState(MAIN_TARGET)
-                        .setTexturingState(DEFAULT_TEXTURING)
-                        .setWriteMaskState(COLOR_DEPTH_WRITE)
-                        .setLineState(DEFAULT_LINE)
-                        .createCompositeState(true)
+import java.util.Objects;
+
+public final class SlideRenderType extends RenderType {
+    private static final ImmutableList<RenderStateShard> GENERAL_STATES;
+
+    static {
+        GENERAL_STATES = ImmutableList.of(
+                TRANSLUCENT_TRANSPARENCY,
+                LEQUAL_DEPTH_TEST,
+                CULL,
+                LIGHTMAP,
+                NO_OVERLAY,
+                NO_LAYERING,
+                MAIN_TARGET,
+                DEFAULT_TEXTURING,
+                COLOR_DEPTH_WRITE,
+                DEFAULT_LINE
         );
-        var baseSetup = this.setupState;
-        this.setupState = () -> {
-            baseSetup.run();
-            RenderSystem.setShaderTexture(0, texture);
-        };
+    }
+
+    private final int mHashCode;
+
+    public SlideRenderType(int texture) {
+        super("slide_show", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
+                VertexFormat.Mode.QUADS, 256, false, true,
+                () -> {
+                    GENERAL_STATES.forEach(RenderStateShard::setupRenderState);
+                    RenderSystem.enableTexture();
+                    RenderSystem.bindTexture(texture);
+                },
+                () -> GENERAL_STATES.forEach(RenderStateShard::clearRenderState));
+        mHashCode = Objects.hash(super.hashCode(), GENERAL_STATES, texture);
     }
 
     public SlideRenderType(ResourceLocation texture) {
-        super(Slideshow.ID + "_icon", DefaultVertexFormat.BLOCK,
+        super("slide_show", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
                 VertexFormat.Mode.QUADS, 256, false, true,
-                CompositeState.builder()
-                        .setShaderState(RENDERTYPE_TEXT_SEE_THROUGH_SHADER)
-                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                        .setDepthTestState(LEQUAL_DEPTH_TEST)
-                        .setCullState(CULL)
-                        .setLightmapState(LIGHTMAP)
-                        .setOverlayState(NO_OVERLAY)
-                        .setLayeringState(NO_LAYERING)
-                        .setOutputState(MAIN_TARGET)
-                        .setTexturingState(DEFAULT_TEXTURING)
-                        .setWriteMaskState(COLOR_DEPTH_WRITE)
-                        .setLineState(DEFAULT_LINE)
-                        .createCompositeState(true));
-        var baseSetup = this.setupState;
-        this.setupState = () -> {
-            baseSetup.run();
-            RenderSystem.setShaderTexture(0, texture);
-        };
+                () -> {
+                    GENERAL_STATES.forEach(RenderStateShard::setupRenderState);
+                    RenderSystem.enableTexture();
+                    Minecraft.getInstance().getTextureManager().bindForSetup(texture);
+                },
+                () -> GENERAL_STATES.forEach(RenderStateShard::clearRenderState));
+        mHashCode = Objects.hash(super.hashCode(), GENERAL_STATES, texture);
+    }
+
+    @Override
+    public int hashCode() {
+        return mHashCode;
     }
 }

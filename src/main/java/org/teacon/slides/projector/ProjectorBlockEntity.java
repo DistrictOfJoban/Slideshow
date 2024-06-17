@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.jetbrains.annotations.Nullable;
 import org.teacon.slides.Slideshow;
 
 import javax.annotation.Nonnull;
@@ -56,9 +57,8 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         return this.projectorBlockEntityData;
     }
 
-    @Override
-    public void saveAdditional(@Nonnull CompoundTag compoundTag) {
-        super.saveAdditional(compoundTag);
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundTag = new CompoundTag();
         compoundTag.putString("ImageLocation", this.projectorBlockEntityData.getLocation());
         compoundTag.putInt("Color", this.projectorBlockEntityData.getColor());
         compoundTag.putFloat("Width", this.projectorBlockEntityData.getWidth());
@@ -68,6 +68,13 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         compoundTag.putFloat("OffsetZ", this.projectorBlockEntityData.getOffsetZ());
         compoundTag.putBoolean("DoubleSided", this.projectorBlockEntityData.isDoubleSided());
         compoundTag.putBoolean("KeepAspectRatio", this.projectorBlockEntityData.isKeepAspectRatio());
+        return compoundTag;
+    }
+
+    @Override
+    public CompoundTag save(@Nonnull CompoundTag compoundTag) {
+        super.save(compoundTag);
+        return compoundTag.merge(this.serializeNBT());
     }
 
     @Override
@@ -84,14 +91,15 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         this.projectorBlockEntityData.setKeepAspectRatio(compoundTag.getBoolean("KeepAspectRatio"));
     }
 
+    @Nullable
     @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.serializeNBT());
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+        return this.save(new CompoundTag());
     }
 
     @Override

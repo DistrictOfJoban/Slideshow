@@ -24,7 +24,7 @@ public final class LazyWidget<T extends GuiEventListener & NarratableEntry> impl
     }
 
     public T refresh() {
-        RenderSystem.assertOnRenderThread();
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         var obj = this.cached;
         if (obj == null) {
             obj = this.initializer.get();
@@ -37,7 +37,7 @@ public final class LazyWidget<T extends GuiEventListener & NarratableEntry> impl
 
     @Override
     public T get() {
-        RenderSystem.assertOnRenderThread();
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         var obj = this.cached;
         if (obj == null) {
             obj = this.initializer.get();
