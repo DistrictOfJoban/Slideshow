@@ -1,11 +1,10 @@
 package org.teacon.slides.projector;
 
 import com.mojang.datafixers.DSL;
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -21,6 +20,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.teacon.slides.Slideshow;
+import org.teacon.slides.packet.OpenMenuPayload;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -56,8 +56,8 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag compoundTag) {
-        super.saveAdditional(compoundTag);
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.saveAdditional(compoundTag, provider);
         compoundTag.putString("ImageLocation", this.projectorBlockEntityData.getLocation());
         compoundTag.putInt("Color", this.projectorBlockEntityData.getColor());
         compoundTag.putFloat("Width", this.projectorBlockEntityData.getWidth());
@@ -70,8 +70,8 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
     }
 
     @Override
-    public void load(@Nonnull CompoundTag compoundTag) {
-        super.load(compoundTag);
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.loadAdditional(compoundTag, provider);
         this.projectorBlockEntityData.setLocation(compoundTag.getString("ImageLocation"));
         this.projectorBlockEntityData.setColor(compoundTag.getInt("Color"));
         this.projectorBlockEntityData.setWidth(compoundTag.getFloat("Width"));
@@ -89,8 +89,8 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        return this.saveWithFullMetadata(provider);
     }
 
     @Override
@@ -101,14 +101,12 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
 
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory inventory, @Nonnull Player player) {
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeBlockPos(this.getBlockPos());
-        return Slideshow.PROJECTOR_SCREEN_HANDLER.create(i, inventory, buf);
+        return Slideshow.PROJECTOR_SCREEN_HANDLER.create(i, inventory, new OpenMenuPayload(this.getBlockPos()));
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-        buf.writeBlockPos(this.getBlockPos());
+    public Object getScreenOpeningData(ServerPlayer player) {
+        return new OpenMenuPayload(this.getBlockPos());
     }
 
     public void transformToSlideSpace(Matrix4f pose, Matrix3f normal) {

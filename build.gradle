@@ -40,8 +40,7 @@ dependencies {
 
     shadowImplementation "org.apache.httpcomponents:httpclient-cache:4.5.14"
 
-    modLocalRuntime "maven.modrinth:sodium:4GyXKCLd"
-//    modLocalRuntime "maven.modrinth:iris:45ETshvT"
+    modLocalRuntime "maven.modrinth:sodium:dNHeFokL" //1.21
 
     compileOnly "com.github.spotbugs:spotbugs-annotations:4.8.5"
 }
@@ -55,16 +54,16 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 17
+    it.options.release = 21
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 remapJar {
@@ -78,6 +77,6 @@ tasks.register('moveFile') {
         outputs.upToDateWhen { false }
         from "build/libs/Slideshow-1.0.3.jar"
         into "build/release/"
-        rename "Slideshow-1.0.3.jar", "Slideshow-fabric-1.20.4-1.0.3.jar"
+        rename "Slideshow-1.0.3.jar", "Slideshow-fabric-1.21-1.0.3.jar"
     }
 }

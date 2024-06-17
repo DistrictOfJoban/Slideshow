@@ -1,21 +1,21 @@
 package org.teacon.slides.projector;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.teacon.slides.Slideshow;
+import org.teacon.slides.packet.OpenMenuPayload;
 
 import javax.annotation.Nonnull;
 
 public final class ProjectorContainerMenu extends AbstractContainerMenu {
     private final BlockPos blockPos;
 
-    public ProjectorContainerMenu(int i, FriendlyByteBuf buf) {
+    public ProjectorContainerMenu(int i, OpenMenuPayload openMenuPayload) {
         super(Slideshow.PROJECTOR_SCREEN_HANDLER, i);
-        this.blockPos = buf.readBlockPos();
+        this.blockPos = openMenuPayload.getBlockPos();
     }
 
     @Override

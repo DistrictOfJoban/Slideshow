@@ -40,7 +40,7 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
                 Matrix3f normal = new Matrix3f(lastPose.normal());
                 blockEntity.transformToSlideSpace(pose, normal);
                 boolean flipped = blockState.getValue(ProjectorBlock.ROTATION).isFlipped();
-                slide.render(source, pose, normal, width, height, color, LightTexture.FULL_BRIGHT, flipped || doubleSided, !flipped || doubleSided, SlideState.getAnimationTick(), partialTick);
+                slide.render(source, pose, lastPose, width, height, color, LightTexture.FULL_BRIGHT, flipped || doubleSided, !flipped || doubleSided, SlideState.getAnimationTick(), partialTick);
                 poseStack.popPose();
             }
         }

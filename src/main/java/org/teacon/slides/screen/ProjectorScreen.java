@@ -24,7 +24,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 import org.teacon.slides.Slideshow;
-import org.teacon.slides.packet.UpdatePacket;
+import org.teacon.slides.packet.UpdatePayload;
 import org.teacon.slides.projector.ProjectorBlock;
 import org.teacon.slides.projector.ProjectorBlockEntity;
 import org.teacon.slides.projector.ProjectorContainerMenu;
@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public final class ProjectorScreen extends AbstractContainerScreen<ProjectorContainerMenu> {
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Slideshow.ID, "textures/gui/projector.png");
+    private static final ResourceLocation GUI_TEXTURE = Objects.requireNonNull(ResourceLocation.tryBuild(Slideshow.ID, "textures/gui/projector.png"));
 
     private static final int URL_MAX_LENGTH = 1 << 9;
     private static final int COLOR_MAX_LENGTH = 1 << 3;
@@ -511,7 +511,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 BlockState blockState = blockEntity.getBlockState().setValue(ProjectorBlock.ROTATION, mRotation);
                 level.setBlock(this.blockPos, blockState, ProjectorBlock.UPDATE_NONE);
             }
-            new UpdatePacket(blockPos, networkData, mRotation).sendToServer();
+            new UpdatePayload(blockPos, networkData, mRotation).sendToServer();
         }
     }
 
