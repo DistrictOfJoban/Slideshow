@@ -23,7 +23,6 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
 
     @Override
     public void render(@Nonnull ProjectorBlockEntity blockEntity, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource source, int packedLight, int packedOverlay) {
-        poseStack.pushPose();
 
         BlockState blockState = blockEntity.getBlockState();
         Slide slide = SlideState.getSlide(blockEntity.getProjectorBlockEntityData().getLocation());
@@ -35,16 +34,16 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
             boolean isPowered = blockState.getValue(POWERED);
             boolean doubleSided = blockEntity.getProjectorBlockEntityData().isDoubleSided();
             if (!isTransparent && !isPowered) {
+                poseStack.pushPose();
                 PoseStack.Pose lastPose = poseStack.last();
                 Matrix4f pose = new Matrix4f(lastPose.pose());
                 Matrix3f normal = new Matrix3f(lastPose.normal());
                 blockEntity.transformToSlideSpace(pose, normal);
                 boolean flipped = blockState.getValue(ProjectorBlock.ROTATION).isFlipped();
                 slide.render(source, pose, normal, width, height, color, LightTexture.FULL_BRIGHT, flipped || doubleSided, !flipped || doubleSided, SlideState.getAnimationTick(), partialTick);
+                poseStack.popPose();
             }
         }
-
-        poseStack.popPose();
     }
 
     @Override
