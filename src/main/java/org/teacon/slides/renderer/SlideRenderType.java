@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.teacon.slides.Slideshow;
 
 import java.util.Objects;
 
@@ -16,6 +16,7 @@ public final class SlideRenderType extends RenderType {
 
     static {
         GENERAL_STATES = ImmutableList.of(
+                RENDERTYPE_TEXT_SEE_THROUGH_SHADER,
                 TRANSLUCENT_TRANSPARENCY,
                 LEQUAL_DEPTH_TEST,
                 CULL,
@@ -32,24 +33,24 @@ public final class SlideRenderType extends RenderType {
     private final int mHashCode;
 
     public SlideRenderType(int texture) {
-        super("slide_show", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
+        super(Slideshow.ID, DefaultVertexFormat.BLOCK,
                 VertexFormat.Mode.QUADS, 256, false, true,
                 () -> {
                     GENERAL_STATES.forEach(RenderStateShard::setupRenderState);
                     RenderSystem.enableTexture();
-                    RenderSystem.bindTexture(texture);
+                    RenderSystem.setShaderTexture(0, texture);
                 },
                 () -> GENERAL_STATES.forEach(RenderStateShard::clearRenderState));
         mHashCode = Objects.hash(super.hashCode(), GENERAL_STATES, texture);
     }
 
     public SlideRenderType(ResourceLocation texture) {
-        super("slide_show", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
+        super(Slideshow.ID, DefaultVertexFormat.BLOCK,
                 VertexFormat.Mode.QUADS, 256, false, true,
                 () -> {
                     GENERAL_STATES.forEach(RenderStateShard::setupRenderState);
                     RenderSystem.enableTexture();
-                    Minecraft.getInstance().getTextureManager().bindForSetup(texture);
+                    RenderSystem.setShaderTexture(0, texture);
                 },
                 () -> GENERAL_STATES.forEach(RenderStateShard::clearRenderState));
         mHashCode = Objects.hash(super.hashCode(), GENERAL_STATES, texture);
