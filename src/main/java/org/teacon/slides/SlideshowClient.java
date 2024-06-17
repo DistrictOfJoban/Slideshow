@@ -4,9 +4,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceLocation;
 import org.teacon.slides.config.Config;
 import org.teacon.slides.renderer.ProjectorRenderer;
@@ -20,7 +20,7 @@ public final class SlideshowClient implements ClientModInitializer {
     public void onInitializeClient() {
         BlockRenderLayerMap.INSTANCE.putBlock(Slideshow.PROJECTOR, RenderType.cutout());
 
-        BlockEntityRenderers.register(Slideshow.PROJECTOR_BLOCK_ENTITY, context -> new ProjectorRenderer());
+        BlockEntityRendererRegistry.register(Slideshow.PROJECTOR_BLOCK_ENTITY, context -> new ProjectorRenderer());
 
         ClientTickEvents.START_CLIENT_TICK.register(SlideState::tick);
 

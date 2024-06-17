@@ -5,6 +5,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.teacon.slides.config.Config;
 
@@ -21,13 +23,13 @@ public final class ConfigScreen extends Screen {
     private static final int BUTTON_WIDTH = 60;
     private static final int BUTTON_HEIGHT = TEXT_HEIGHT + TEXT_PADDING;
 
-    private static final Component CONFIG_TEXT = Component.translatable("gui.slide_show.config");
-    private static final Component PROXY_SWITCH = Component.translatable("gui.slide_show.config.proxy_switch");
-    private static final Component PROXY_SWITCH_ON = Component.translatable("gui.slide_show.config.proxy_switch_on");
-    private static final Component PROXY_SWITCH_OFF = Component.translatable("gui.slide_show.config.proxy_switch_off");
-    private static final Component CONFIG_HOST = Component.translatable("gui.slide_show.config.host");
-    private static final Component CONFIG_PORT = Component.translatable("gui.slide_show.config.port");
-    private static final Component CONFIG_VIEW_DISTANCE = Component.translatable("gui.slide_show.config.view_distance");
+    private static final Component CONFIG_TEXT = new TranslatableComponent("gui.slide_show.config");
+    private static final Component PROXY_SWITCH = new TranslatableComponent("gui.slide_show.config.proxy_switch");
+    private static final Component PROXY_SWITCH_ON = new TranslatableComponent("gui.slide_show.config.proxy_switch_on");
+    private static final Component PROXY_SWITCH_OFF = new TranslatableComponent("gui.slide_show.config.proxy_switch_off");
+    private static final Component CONFIG_HOST = new TranslatableComponent("gui.slide_show.config.host");
+    private static final Component CONFIG_PORT = new TranslatableComponent("gui.slide_show.config.port");
+    private static final Component CONFIG_VIEW_DISTANCE = new TranslatableComponent("gui.slide_show.config.view_distance");
 
     private boolean proxySwitch;
     private String host;
@@ -36,7 +38,7 @@ public final class ConfigScreen extends Screen {
     private boolean isChanged;
 
     public ConfigScreen(Screen parent) {
-        super(Component.literal(""));
+        super(TextComponent.EMPTY);
         this.parent = parent;
         this.proxySwitch = Config.isProxySwitch();
         this.host = Config.getHost();

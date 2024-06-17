@@ -40,7 +40,7 @@ dependencies {
 
     shadowImplementation "org.apache.httpcomponents:httpclient-cache:4.5.14"
 
-    modLocalRuntime "maven.modrinth:sodium:rAfhHfow" //1.19.2
+    modLocalRuntime "maven.modrinth:sodium:74Y5Z8fo" //1.18.2
 //    modLocalRuntime "maven.modrinth:iris:45ETshvT"
 
     compileOnly "com.github.spotbugs:spotbugs-annotations:4.8.5"
@@ -78,6 +78,6 @@ tasks.register('moveFile') {
         outputs.upToDateWhen { false }
         from "build/libs/Slideshow-1.0.3.jar"
         into "build/release/"
-        rename "Slideshow-1.0.3.jar", "Slideshow-fabric-1.19.2-1.0.3.jar"
+        rename "Slideshow-1.0.3.jar", "Slideshow-fabric-1.18.2-1.0.3.jar"
     }
 }

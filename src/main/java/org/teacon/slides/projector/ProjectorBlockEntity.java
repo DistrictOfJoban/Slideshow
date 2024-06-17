@@ -4,11 +4,13 @@ import com.mojang.datafixers.DSL;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -23,13 +25,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.teacon.slides.Slideshow;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
 
 public final class ProjectorBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory {
     private ProjectorBlockEntityData projectorBlockEntityData;
 
     public static BlockEntityType<ProjectorBlockEntity> create() {
-        return new BlockEntityType<>(ProjectorBlockEntity::new, Set.of(Slideshow.PROJECTOR), DSL.remainderType());
+        return FabricBlockEntityTypeBuilder.create(ProjectorBlockEntity::new, Slideshow.PROJECTOR).build(DSL.remainderType());
     }
 
     private ProjectorBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -96,7 +97,7 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
     @Override
     @Nonnull
     public Component getDisplayName() {
-        return Component.literal("gui.slide_show.title");
+        return new TranslatableComponent("gui.slide_show.title");
     }
 
     @Override
