@@ -33,7 +33,7 @@ public final class Slideshow implements ModInitializer {
     public void onInitialize() {
         Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(ID, "projector"), PROJECTOR);
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(ID, "projector"), PROJECTOR_BLOCK_ITEM);
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation("projector"), PROJECTOR_BLOCK_ENTITY);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation(ID, "projector"), PROJECTOR_BLOCK_ENTITY);
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> content.accept(PROJECTOR_BLOCK_ITEM));
         Registry.register(BuiltInRegistries.MENU, new ResourceLocation(ID, "projector"), PROJECTOR_SCREEN_HANDLER);
         ServerPlayNetworking.registerGlobalReceiver(UPDATE_CHANNEL, ((server, player, handler, buf, responseSender) -> {
