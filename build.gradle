@@ -28,6 +28,7 @@ shadowJar {
     configurations = [project.configurations.shadowImplementation]
     relocate "org.apache.http.client.cache", "org.teacon.slides.http.client.cache"
     relocate "org.apache.http.impl.client.cache", "org.teacon.slides.http.impl.client.cache"
+    relocate "com.luciad.imageio.webp", "org.teacon.slides.imageio.webp"
 }
 
 dependencies {
@@ -39,6 +40,7 @@ dependencies {
     modApi "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
     shadowImplementation "org.apache.httpcomponents:httpclient-cache:4.5.14"
+    shadowImplementation "org.sejda.imageio:webp-imageio:0.1.6"
 
 //    modLocalRuntime "maven.modrinth:sodium:Fz37KqRh" //1.17.1
 //    modLocalRuntime "maven.modrinth:iris:45ETshvT"
