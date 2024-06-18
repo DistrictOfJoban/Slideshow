@@ -78,8 +78,8 @@ remapJar {
 tasks.register('moveFile') {
     copy {
         outputs.upToDateWhen { false }
-        from "build/libs/Slideshow-1.0.3.jar"
+        from "build/libs/Slideshow-${project.mod_version}.jar"
         into "build/release/"
-        rename "Slideshow-1.0.3.jar", "Slideshow-fabric-1.18.2-1.0.3.jar"
+        rename "Slideshow-${project.mod_version}.jar", "Slideshow-fabric-${project.minecraft_version}-${project.mod_version}.jar"
     }
 }
