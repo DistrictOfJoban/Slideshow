@@ -73,7 +73,7 @@ public final class ImageCache {
             final HttpCacheContext context = HttpCacheContext.create();
             try (CloseableHttpResponse response = createResponse(location, context, online)) {
                 try {
-                    return IOUtils.toByteArray(response.getEntity().getContent());
+                    return WebpToPng.webpToPng(IOUtils.toByteArray(response.getEntity().getContent()));
                 } catch (IOException e) {
                     if (online) {
                         Slideshow.LOGGER.warn("Failed to read bytes from remote source.", e);
