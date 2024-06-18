@@ -28,7 +28,6 @@ shadowJar {
     configurations = [project.configurations.shadowImplementation]
     relocate "org.apache.http.client.cache", "org.teacon.slides.http.client.cache"
     relocate "org.apache.http.impl.client.cache", "org.teacon.slides.http.impl.client.cache"
-    relocate "com.luciad.imageio.webp", "org.teacon.slides.imageio.webp"
 }
 
 dependencies {
