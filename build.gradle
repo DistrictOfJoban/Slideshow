@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.6-SNAPSHOT'
+    id 'fabric-loom' version "+"
     id "com.github.johnrengelman.shadow" version "+"
 }
 
@@ -41,7 +41,7 @@ dependencies {
     shadowImplementation "org.apache.httpcomponents:httpclient-cache:4.5.14"
     shadowImplementation "org.sejda.imageio:webp-imageio:0.1.6"
 
-    modLocalRuntime "maven.modrinth:sodium:dNHeFokL" //1.21
+    modLocalRuntime "maven.modrinth:sodium:oZOSEhyy" //1.21.1
 
     compileOnly "com.github.spotbugs:spotbugs-annotations:4.8.5"
 }
