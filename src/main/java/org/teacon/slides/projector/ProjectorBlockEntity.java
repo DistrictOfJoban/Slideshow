@@ -29,7 +29,7 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
     private ProjectorBlockEntityData projectorBlockEntityData;
 
     public static BlockEntityType<ProjectorBlockEntity> create() {
-        return new BlockEntityType<>(ProjectorBlockEntity::new, Set.of(Slideshow.PROJECTOR), DSL.remainderType());
+        return new BlockEntityType<>(ProjectorBlockEntity::new, Set.of(Slideshow.PROJECTOR));
     }
 
     private ProjectorBlockEntity(BlockPos blockPos, BlockState blockState) {

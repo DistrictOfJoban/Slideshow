@@ -41,7 +41,7 @@ dependencies {
     shadowImplementation "org.apache.httpcomponents:httpclient-cache:4.5.14"
     shadowImplementation "org.sejda.imageio:webp-imageio:0.1.6"
 
-    modLocalRuntime "maven.modrinth:sodium:oZOSEhyy" //1.21.1
+    modLocalRuntime "maven.modrinth:sodium:iPRNybGo" //1.21.4
 
     compileOnly "com.github.spotbugs:spotbugs-annotations:4.8.5"
 }
