@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public final class SlideState {
     private static final Executor RENDER_EXECUTOR = r -> RenderSystem.recordRenderCall(r::run);
-    private static final AtomicReference<ConcurrentHashMap<String, SlideState>> sCache;
+    private static final AtomicReference<ConcurrentHashMap<SlideStateProperties, SlideState>> sCache;
 
     static {
         sCache = new AtomicReference<>(new ConcurrentHashMap<>());
@@ -39,7 +39,7 @@ public final class SlideState {
     public static void tick(Minecraft minecraft) {
         if (!minecraft.isPaused()) {
             if (++animationTick % 20 == 0) {
-                ConcurrentHashMap<String, SlideState> map = sCache.getAcquire();
+                ConcurrentHashMap<SlideStateProperties, SlideState> map = sCache.getAcquire();
                 if (!map.isEmpty()) {
                     map.entrySet().removeIf(entry -> entry.getValue().update());
                 }
@@ -56,7 +56,7 @@ public final class SlideState {
 
     public static void onPlayerLeft() {
         RenderSystem.recordRenderCall(() -> {
-            ConcurrentHashMap<String, SlideState> map = sCache.getAndSet(new ConcurrentHashMap<>());
+            ConcurrentHashMap<SlideStateProperties, SlideState> map = sCache.getAndSet(new ConcurrentHashMap<>());
             map.values().forEach(s -> s.mSlide.close());
             Slideshow.LOGGER.debug("Release {} slide images", map.size());
             map.clear();
@@ -67,11 +67,11 @@ public final class SlideState {
         return animationTick;
     }
 
-    public static Slide getSlide(@Nonnull String location) {
-        if (location.isEmpty()) {
+    public static Slide getSlide(@Nonnull SlideStateProperties slideStateProperties) {
+        if (slideStateProperties.location().isEmpty()) {
             return null;
         }
-        return sCache.getAcquire().computeIfAbsent(location, SlideState::new).getWithUpdate();
+        return sCache.getAcquire().computeIfAbsent(slideStateProperties, (loc) -> new SlideState(slideStateProperties)).getWithUpdate();
     }
 
 
@@ -80,8 +80,8 @@ public final class SlideState {
 
     private int mCounter;
 
-    private SlideState(String location) {
-        URI uri = createURI(location);
+    private SlideState(SlideStateProperties slideStateProperties) {
+        URI uri = createURI(slideStateProperties.location());
         if (uri == null) {
             mSlide = Slide.failed();
             mState = State.FAILED;
@@ -90,7 +90,7 @@ public final class SlideState {
             mSlide = Slide.loading();
             mState = State.LOADING;
             mCounter = RECYCLE_SECONDS;
-            ImageCache.getInstance().getResource(uri, true).thenCompose(SlideState::createTexture)
+            ImageCache.getInstance().getResource(uri, true).thenCompose((data) -> SlideState.createTexture(data, slideStateProperties.disableLod()))
                     .thenAccept(textureProvider -> {
                         if (mState == State.LOADING) {
                             mSlide = Slide.make(textureProvider);
@@ -153,8 +153,8 @@ public final class SlideState {
     }
 
     @Nonnull
-    private static CompletableFuture<TextureProvider> createTexture(byte[] data) {
-        return CompletableFuture.supplyAsync(GIFDecoder.checkMagic(data) ? () -> new AnimatedTextureProvider(data) : () -> new StaticTextureProvider(data), RENDER_EXECUTOR);
+    private static CompletableFuture<TextureProvider> createTexture(byte[] data, boolean disableLod) {
+        return CompletableFuture.supplyAsync(GIFDecoder.checkMagic(data) ? () -> new AnimatedTextureProvider(data) : () -> new StaticTextureProvider(data, disableLod), RENDER_EXECUTOR);
     }
 
     public enum State {

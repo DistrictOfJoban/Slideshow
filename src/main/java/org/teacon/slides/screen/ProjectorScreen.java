@@ -29,6 +29,7 @@ import org.teacon.slides.projector.ProjectorBlock;
 import org.teacon.slides.projector.ProjectorBlockEntity;
 import org.teacon.slides.projector.ProjectorContainerMenu;
 import org.teacon.slides.renderer.SlideState;
+import org.teacon.slides.renderer.SlideStateProperties;
 import org.teacon.slides.slide.Slide;
 
 import javax.annotation.Nonnull;
@@ -346,7 +347,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         if (this.data != null) {
             if (!mURLInput.get().isFocused()) {
                 if (mSyncAspectRatio != SyncAspectRatio.SYNCED && !mInvalidWidth && !mInvalidHeight) {
-                    Slide slide = SlideState.getSlide(data.getLocation());
+                    Slide slide = SlideState.getSlide(new SlideStateProperties(data.getLocation(), data.isLodDisabled()));
                     float aspect = slide == null ? Float.NaN : slide.getImageAspectRatio();
                     if (!Float.isNaN(aspect)) {
                         if (mSyncAspectRatio == SyncAspectRatio.SYNC_WIDTH_WITH_HEIGHT) {

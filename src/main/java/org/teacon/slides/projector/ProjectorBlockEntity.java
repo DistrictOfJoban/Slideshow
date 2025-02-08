@@ -65,6 +65,8 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         compoundTag.putFloat("OffsetX", this.projectorBlockEntityData.getOffsetX());
         compoundTag.putFloat("OffsetY", this.projectorBlockEntityData.getOffsetY());
         compoundTag.putFloat("OffsetZ", this.projectorBlockEntityData.getOffsetZ());
+        compoundTag.putBoolean("DisableLod", this.projectorBlockEntityData.isLodDisabled());
+        compoundTag.putBoolean("DoubleSided", this.projectorBlockEntityData.isDoubleSided());
         compoundTag.putBoolean("DoubleSided", this.projectorBlockEntityData.isDoubleSided());
         compoundTag.putBoolean("KeepAspectRatio", this.projectorBlockEntityData.isKeepAspectRatio());
     }
@@ -79,6 +81,7 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         this.projectorBlockEntityData.setOffsetX(compoundTag.getFloat("OffsetX"));
         this.projectorBlockEntityData.setOffsetY(compoundTag.getFloat("OffsetY"));
         this.projectorBlockEntityData.setOffsetZ(compoundTag.getFloat("OffsetZ"));
+        this.projectorBlockEntityData.setDisableLod(compoundTag.getBoolean("DisableLod"));
         this.projectorBlockEntityData.setDoubleSided(compoundTag.getBoolean("DoubleSided"));
         this.projectorBlockEntityData.setKeepAspectRatio(compoundTag.getBoolean("KeepAspectRatio"));
     }
@@ -134,6 +137,7 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         private float mOffsetX = 0;
         private float mOffsetY = 0;
         private float mOffsetZ = 0;
+        private boolean mDisableLod = false;
         private boolean mKeepAspectRatio = true;
         private boolean mDoubleSided = true;
 
@@ -149,6 +153,7 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
             copy.setOffsetX(mOffsetX);
             copy.setOffsetY(mOffsetY);
             copy.setOffsetZ(mOffsetZ);
+            copy.setDisableLod(mDisableLod);
             copy.setKeepAspectRatio(mKeepAspectRatio);
             copy.setDoubleSided(mDoubleSided);
             return copy;
@@ -180,6 +185,10 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
 
         public float getOffsetZ() {
             return mOffsetZ;
+        }
+
+        public boolean isLodDisabled() {
+            return mDisableLod;
         }
 
         public boolean isKeepAspectRatio() {
@@ -216,6 +225,10 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
 
         public void setOffsetZ(float mOffsetZ) {
             this.mOffsetZ = mOffsetZ;
+        }
+
+        public void setDisableLod(boolean mDisableLod) {
+            this.mDisableLod = mDisableLod;
         }
 
         public void setKeepAspectRatio(boolean mKeepAspectRatio) {

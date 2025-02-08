@@ -24,7 +24,7 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
     @Override
     public void render(@Nonnull ProjectorBlockEntity blockEntity, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource source, int packedLight, int packedOverlay) {
         BlockState blockState = blockEntity.getBlockState();
-        Slide slide = SlideState.getSlide(blockEntity.getProjectorBlockEntityData().getLocation());
+        Slide slide = SlideState.getSlide(new SlideStateProperties(blockEntity.getProjectorBlockEntityData().getLocation(), blockEntity.getProjectorBlockEntityData().isLodDisabled()));
         if (slide != null) {
             float width = blockEntity.getProjectorBlockEntityData().getWidth();
             float height = blockEntity.getProjectorBlockEntityData().getHeight();
