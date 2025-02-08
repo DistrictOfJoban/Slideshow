@@ -2,14 +2,14 @@
 	"schemaVersion": 1,
 	"id": "slide_show",
 	"version": "${version}",
-	"name": "Slide Show",
+	"name": "Slide Show Community",
 	"description": "Minecraft mod, adding a projector that can display online images.",
 	"authors": [
-		"TeaConMC", "BloCamLimb", "3TUSK", "ustc-zzzz", "Jonathan", "zbx1425","AIDA64S"
+		"TeaConMC", "BloCamLimb", "3TUSK", "ustc-zzzz", "Jonathan", "zbx1425", "AIDA64S", "LX86"
 	],
 	"contact": {
-		"homepage": "https://modrinth.com/mod/slideshow-fabric",
-		"sources": "https://github.com/AIDA64S/Slideshow"
+		"homepage": "https://github.com/DistrictOfJoban/Slideshow",
+		"sources": "https://github.com/DistrictOfJoban/Slideshow"
 	},
 	"license": "BSD-3-Clause",
 	"icon": "icon.png",
