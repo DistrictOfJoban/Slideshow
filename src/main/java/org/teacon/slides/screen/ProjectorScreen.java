@@ -55,6 +55,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     private static final Component FLIP_TEXT = Component.translatable("gui.slide_show.flip");
     private static final Component ROTATE_TEXT = Component.translatable("gui.slide_show.rotate");
     private static final Component SINGLE_DOUBLE_SIDED_TEXT = Component.translatable("gui.slide_show.single_double_sided");
+    private static final Component DISABLE_LOD_TEXT = Component.translatable("gui.slide_show.enable_disable_lod");
 
     private final LazyWidget<EditBox> mURLInput;
     private final LazyWidget<EditBox> mColorInput;
@@ -68,6 +69,8 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     private final LazyWidget<Button> mCycleRotation;
     private final LazyWidget<Button> mSwitchSingleSided;
     private final LazyWidget<Button> mSwitchDoubleSided;
+    private final LazyWidget<Button> mSwitchDisableLod;
+    private final LazyWidget<Button> mSwitchEnableLod;
     private final LazyWidget<Button> mKeepAspectChecked;
     private final LazyWidget<Button> mKeepAspectUnchecked;
 
@@ -76,6 +79,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     private Vector2f mImageSize;
     private Vector3f mImageOffset;
     private boolean mDoubleSided;
+    private boolean mDisableLod;
     private boolean mKeepAspectRatio;
     private SyncAspectRatio mSyncAspectRatio;
     private ProjectorBlock.InternalRotation mRotation;
@@ -95,7 +99,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     public ProjectorScreen(ProjectorContainerMenu projectorContainerMenu, Inventory inventory, Component component) {
         super(projectorContainerMenu, inventory, component);
         this.imageWidth = 176;
-        this.imageHeight = 217;
+        this.imageHeight = 240;
         this.blockPos = projectorContainerMenu.getBlockPos();
         Level level = Minecraft.getInstance().level;
         if (level == null) {
@@ -111,6 +115,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
             this.mImageSize = new Vector2f(this.data.getWidth(), this.data.getHeight());
             this.mImageOffset = new Vector3f(this.data.getOffsetX(), this.data.getOffsetY(), this.data.getOffsetZ());
             this.mDoubleSided = this.data.isDoubleSided();
+            this.mDisableLod = this.data.isLodDisabled();
             this.mKeepAspectRatio = this.data.isKeepAspectRatio();
             this.mSyncAspectRatio = this.mKeepAspectRatio ? SyncAspectRatio.SYNC_WIDTH_WITH_HEIGHT : SyncAspectRatio.SYNCED;
             this.mRotation = rotation;
@@ -282,6 +287,26 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 return button;
             });
 
+            this.mSwitchDisableLod = LazyWidget.of(!this.data.isLodDisabled(), b -> b.visible, value -> {
+                Button button = new Button(this.leftPos + 9, this.topPos + 175, 179, 13, 18, 19, SINGLE_DOUBLE_SIDED_TEXT, () -> {
+                    if (!this.mDisableLod) {
+                        updateDisableLod(true);
+                    }
+                });
+                button.visible = value;
+                return button;
+            });
+
+            this.mSwitchEnableLod = LazyWidget.of(this.data.isLodDisabled(), b -> b.visible, value -> {
+                Button button = new Button(this.leftPos + 9, this.topPos + 175, 179, 33, 18, 19, SINGLE_DOUBLE_SIDED_TEXT, () -> {
+                    if (this.mDisableLod) {
+                        updateDisableLod(false);
+                    }
+                });
+                button.visible = value;
+                return button;
+            });
+
             this.mKeepAspectChecked = LazyWidget.of(this.mKeepAspectRatio, b -> b.visible, value -> {
                 Button button = new Button(leftPos + 149, topPos + 49, 179, 93, 18, 19, KEEP_ASPECT_RATIO_TEXT, () -> {
                     if (this.mKeepAspectRatio) {
@@ -317,6 +342,8 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         this.mCycleRotation = null;
         this.mSwitchSingleSided = null;
         this.mSwitchDoubleSided = null;
+        this.mSwitchDisableLod = null;
+        this.mSwitchEnableLod = null;
         this.mKeepAspectChecked = null;
         this.mKeepAspectUnchecked = null;
     }
@@ -336,6 +363,8 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
             addRenderableWidget(mCycleRotation.refresh());
             addRenderableWidget(mSwitchSingleSided.refresh());
             addRenderableWidget(mSwitchDoubleSided.refresh());
+            addRenderableWidget(mSwitchDisableLod.refresh());
+            addRenderableWidget(mSwitchEnableLod.refresh());
             addRenderableWidget(mKeepAspectChecked.refresh());
             addRenderableWidget(mKeepAspectUnchecked.refresh());
             setInitialFocus(mURLInput.get());
@@ -450,6 +479,8 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 gui.renderTooltip(this.font, ROTATE_TEXT, offsetX, offsetY);
             } else if (offsetX >= 9 && offsetY >= 153 && offsetX < 27 && offsetY < 172) {
                 gui.renderTooltip(this.font, SINGLE_DOUBLE_SIDED_TEXT, offsetX, offsetY);
+            } else if (offsetX >= 9 && offsetY >= 175 && offsetX < 27 && offsetY < 194) {
+                gui.renderTooltip(this.font, DISABLE_LOD_TEXT, offsetX, offsetY);
             }
         }
 
@@ -505,6 +536,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
             if (!this.mInvalidOffsetZ) {
                 networkData.setOffsetZ(this.mImageOffset.z());
             }
+            networkData.setDisableLod(this.mDisableLod);
             networkData.setDoubleSided(this.mDoubleSided);
             networkData.setKeepAspectRatio(this.mKeepAspectRatio);
             Level level = Minecraft.getInstance().level;
@@ -543,6 +575,12 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         mDoubleSided = doubleSided;
         mSwitchSingleSided.get().visible = doubleSided;
         mSwitchDoubleSided.get().visible = !doubleSided;
+    }
+
+    private void updateDisableLod(boolean disableLod) {
+        mDisableLod = disableLod;
+        mSwitchEnableLod.get().visible = disableLod;
+        mSwitchDisableLod.get().visible = !disableLod;
     }
 
     private void updateKeepAspectRatio(boolean keepAspectRatio) {

@@ -32,6 +32,7 @@ public class UpdatePacket {
         this.data.setOffsetX(buf.readFloat());
         this.data.setOffsetY(buf.readFloat());
         this.data.setOffsetZ(buf.readFloat());
+        this.data.setDisableLod(buf.readBoolean());
         this.data.setDoubleSided(buf.readBoolean());
         this.data.setKeepAspectRatio(buf.readBoolean());
         this.rotation = Enum.valueOf(ProjectorBlock.InternalRotation.class, buf.readUtf());
@@ -47,6 +48,7 @@ public class UpdatePacket {
         buf.writeFloat(this.data.getOffsetX());
         buf.writeFloat(this.data.getOffsetY());
         buf.writeFloat(this.data.getOffsetZ());
+        buf.writeBoolean(this.data.isLodDisabled());
         buf.writeBoolean(this.data.isDoubleSided());
         buf.writeBoolean(this.data.isKeepAspectRatio());
         buf.writeUtf(this.rotation.name());
