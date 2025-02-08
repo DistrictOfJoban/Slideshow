@@ -18,9 +18,11 @@ public final class Config {
     private static String host = "localhost";
     private static int port = 8080;
     private static int viewDistance = 256;
+    private static boolean traceSlideshow = false;
     private static HttpHost PROXY;
 
     private static final String PROXY_SWITCH = "proxySwitch";
+    private static final String TRACE_SLIDESHOW = "traceSlideshow";
     private static final String HOST = "host";
     private static final String PORT = "port";
     private static final String VIEW_DISTANCE = "slideshowViewDistance";
@@ -30,6 +32,10 @@ public final class Config {
 
     public static boolean isProxySwitch() {
         return proxySwitch;
+    }
+
+    public static boolean traceSlideshow() {
+        return traceSlideshow;
     }
 
     public static int getViewDistance() {
@@ -52,6 +58,10 @@ public final class Config {
         Config.proxySwitch = proxySwitch;
     }
 
+    public static void setTraceSlideshow(boolean traceSlideshow) {
+        Config.traceSlideshow = traceSlideshow;
+    }
+
     public static void setHost(String host) {
         Config.host = host;
     }
@@ -64,6 +74,7 @@ public final class Config {
         Config.viewDistance = viewDistance;
     }
 
+
     public static void saveToFile() {
         writeToFile();
     }
@@ -74,6 +85,10 @@ public final class Config {
             final JsonObject jsonConfig = JsonParser.parseString(String.join("", Files.readAllLines(CONFIG_PATH))).getAsJsonObject();
             try {
                 proxySwitch = jsonConfig.get(PROXY_SWITCH).getAsBoolean();
+            } catch (Exception ignored) {
+            }
+            try {
+                traceSlideshow = jsonConfig.get(TRACE_SLIDESHOW).getAsBoolean();
             } catch (Exception ignored) {
             }
             try {
@@ -106,6 +121,7 @@ public final class Config {
         Slideshow.LOGGER.info("Wrote Slideshow mod config to file");
         final JsonObject jsonConfig = new JsonObject();
         jsonConfig.addProperty(PROXY_SWITCH, proxySwitch);
+        jsonConfig.addProperty(TRACE_SLIDESHOW, traceSlideshow);
         jsonConfig.addProperty(HOST, host);
         jsonConfig.addProperty(PORT, port);
         jsonConfig.addProperty(VIEW_DISTANCE, viewDistance);

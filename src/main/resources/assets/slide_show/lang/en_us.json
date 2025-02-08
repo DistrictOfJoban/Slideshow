@@ -18,6 +18,7 @@
   "gui.slide_show.config.proxy_switch": "Proxy",
   "gui.slide_show.config.proxy_switch_on": "Enable",
   "gui.slide_show.config.proxy_switch_off": "Disable",
+  "gui.slide_show.config.trace_slideshow": "Trace Slideshow",
   "gui.slide_show.config.host": "Host",
   "gui.slide_show.config.port": "Port",
   "gui.slide_show.config.view_distance": "Max View Distance"

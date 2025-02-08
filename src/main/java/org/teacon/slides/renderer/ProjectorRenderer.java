@@ -1,8 +1,10 @@
 package org.teacon.slides.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Matrix3f;
@@ -32,6 +34,7 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
             boolean isTransparent = (color & 0xFF000000) == 0;
             boolean isPowered = blockState.getValue(POWERED);
             boolean doubleSided = blockEntity.getProjectorBlockEntityData().isDoubleSided();
+
             if (!isTransparent && !isPowered) {
                 poseStack.pushPose();
                 PoseStack.Pose lastPose = poseStack.last();
@@ -41,6 +44,15 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
                 boolean flipped = blockState.getValue(ProjectorBlock.ROTATION).isFlipped();
                 slide.render(source, pose, normal, width, height, color, LightTexture.FULL_BRIGHT, flipped || doubleSided, !flipped || doubleSided, SlideState.getAnimationTick(), partialTick);
                 poseStack.popPose();
+
+                if(Config.traceSlideshow()) {
+                    poseStack.pushPose();
+                    Matrix4f blockPose = new Matrix4f(lastPose.pose());
+                    VertexConsumer consumer = source.getBuffer(RenderType.lines());
+                    consumer.vertex(pose, 0.5f, 0, 0.5f).uv(0, 0).color(255, 0, 0, 255).normal(normal, 0, 1, 0).endVertex();
+                    consumer.vertex(blockPose, 0.5f, 0.5f, 0.5f).uv(0, 0).color(255, 0, 0, 255).normal(normal, 0, 1, 0).endVertex();
+                    poseStack.popPose();
+                }
             }
         }
     }
