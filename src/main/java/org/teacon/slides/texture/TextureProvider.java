@@ -5,7 +5,7 @@ import org.teacon.slides.renderer.SlideRenderType;
 import javax.annotation.Nonnull;
 
 public interface TextureProvider extends AutoCloseable {
-    int MAX_TEXTURE_SIZE = 4096;
+    int MAX_TEXTURE_SIZE = 6144;
 
     @Nonnull
     SlideRenderType updateAndGet(long tick, float partialTick);
