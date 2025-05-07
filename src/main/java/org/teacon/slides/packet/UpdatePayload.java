@@ -39,6 +39,10 @@ public class UpdatePayload implements CustomPacketPayload {
         this.data.setOffsetX(buf.readFloat());
         this.data.setOffsetY(buf.readFloat());
         this.data.setOffsetZ(buf.readFloat());
+        this.data.setRotateX(buf.readFloat());
+        this.data.setRotateY(buf.readFloat());
+        this.data.setRotateZ(buf.readFloat());
+        this.data.setDisableLod(buf.readBoolean());
         this.data.setDoubleSided(buf.readBoolean());
         this.data.setKeepAspectRatio(buf.readBoolean());
         this.rotation = Enum.valueOf(ProjectorBlock.InternalRotation.class, buf.readUtf());
@@ -53,6 +57,10 @@ public class UpdatePayload implements CustomPacketPayload {
         buf.writeFloat(this.data.getOffsetX());
         buf.writeFloat(this.data.getOffsetY());
         buf.writeFloat(this.data.getOffsetZ());
+        buf.writeFloat(data.getRotateX());
+        buf.writeFloat(data.getRotateY());
+        buf.writeFloat(data.getRotateZ());
+        buf.writeBoolean(data.isDisableLod());
         buf.writeBoolean(this.data.isDoubleSided());
         buf.writeBoolean(this.data.isKeepAspectRatio());
         buf.writeUtf(this.rotation.name());
