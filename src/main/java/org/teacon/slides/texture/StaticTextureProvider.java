@@ -22,7 +22,7 @@ public final class StaticTextureProvider implements TextureProvider {
     private final SlideRenderType mRenderType;
     private final int mWidth, mHeight;
 
-    public StaticTextureProvider(@Nonnull byte[] data) {
+    public StaticTextureProvider(@Nonnull byte[] data, boolean enableLod) {
         // copy to native memory
         ByteBuffer buffer = MemoryUtil.memAlloc(data.length)
                 .put(data)
@@ -31,10 +31,13 @@ public final class StaticTextureProvider implements TextureProvider {
         try (NativeImage image = NativeImage.read(buffer)) {
             mWidth = image.getWidth();
             mHeight = image.getHeight();
+
             if (mWidth > MAX_TEXTURE_SIZE || mHeight > MAX_TEXTURE_SIZE) {
                 throw new IOException("Image is too big: " + mWidth + "x" + mHeight);
             }
-            final int maxLevel = Math.min(31 - Integer.numberOfLeadingZeros(Math.max(mWidth, mHeight)), 4);
+
+            int maxLevel = Math.min(31 - Integer.numberOfLeadingZeros(Math.max(mWidth, mHeight)), 4);
+            if (!enableLod) maxLevel = 0;
 
             mTexture = GlStateManager._genTexture();
             GlStateManager._bindTexture(mTexture);
@@ -66,8 +69,11 @@ public final class StaticTextureProvider implements TextureProvider {
                         GL_RGBA, GL_UNSIGNED_BYTE, image.pixels);
             }
 
-            // auto generate mipmap
-            glGenerateMipmap(GL_TEXTURE_2D);
+            // only generate mipmaps if lod is disabled
+            if (enableLod) {
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+
             mRenderType = new SlideRenderType(mTexture);
         } catch (Throwable t) {
             close();

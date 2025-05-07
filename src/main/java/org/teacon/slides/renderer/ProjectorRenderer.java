@@ -23,9 +23,10 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
 
     @Override
     public void render(@Nonnull ProjectorBlockEntity blockEntity, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource source, int packedLight, int packedOverlay) {
-
         BlockState blockState = blockEntity.getBlockState();
-        Slide slide = SlideState.getSlide(blockEntity.getProjectorBlockEntityData().getLocation());
+        boolean enableLod = !blockEntity.getProjectorBlockEntityData().isDisableLod();
+        Slide slide = SlideState.getSlide(blockEntity.getProjectorBlockEntityData().getLocation(), enableLod);
+
         if (slide != null) {
             float width = blockEntity.getProjectorBlockEntityData().getWidth();
             float height = blockEntity.getProjectorBlockEntityData().getHeight();
@@ -33,6 +34,7 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
             boolean isTransparent = (color & 0xFF000000) == 0;
             boolean isPowered = blockState.getValue(POWERED);
             boolean doubleSided = blockEntity.getProjectorBlockEntityData().isDoubleSided();
+            
             if (!isTransparent && !isPowered) {
                 poseStack.pushPose();
                 PoseStack.Pose lastPose = poseStack.last();
@@ -40,7 +42,7 @@ public final class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlo
                 Matrix3f normal = new Matrix3f(lastPose.normal());
                 blockEntity.transformToSlideSpace(pose, normal);
                 boolean flipped = blockState.getValue(ProjectorBlock.ROTATION).isFlipped();
-                slide.render(source, pose, lastPose, width, height, color, LightTexture.FULL_BRIGHT, flipped || doubleSided, !flipped || doubleSided, SlideState.getAnimationTick(), partialTick);
+                slide.render(source, pose, lastPose, width, height, color, LightTexture.FULL_BRIGHT, flipped || doubleSided, !flipped || doubleSided, enableLod, SlideState.getAnimationTick(), partialTick);
                 poseStack.popPose();
             }
         }

@@ -22,7 +22,7 @@ public enum IconSlide implements Slide {
     }
 
     @Override
-    public void render(MultiBufferSource source, Matrix4f matrix, PoseStack.Pose normal, float width, float height, int color, int light, boolean front, boolean back, long tick, float partialTick) {
+    public void render(MultiBufferSource source, Matrix4f matrix, PoseStack.Pose normal, float width, float height, int color, int light, boolean front, boolean back, boolean enableLod, long tick, float partialTick) {
         var alpha = color >>> 24;
         var factor = getFactor(width, height);
         var xSize = Math.round(width / factor);
