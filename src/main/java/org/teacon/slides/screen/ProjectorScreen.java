@@ -54,6 +54,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     private static final Component FLIP_TEXT = Component.translatable("gui.slide_show.flip");
     private static final Component ROTATE_TEXT = Component.translatable("gui.slide_show.rotate");
     private static final Component SINGLE_DOUBLE_SIDED_TEXT = Component.translatable("gui.slide_show.single_double_sided");
+    private static final Component DISABLE_LOD_TEXT = Component.translatable("gui.slide_show.enable_disable_lod");
 
     private final LazyWidget<EditBox> mURLInput;
     private final LazyWidget<EditBox> mColorInput;
@@ -63,10 +64,16 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     private final LazyWidget<EditBox> mOffsetYInput;
     private final LazyWidget<EditBox> mOffsetZInput;
 
+    private final LazyWidget<RotationEditBox> mRotateXInput;
+    private final LazyWidget<RotationEditBox> mRotateYInput;
+    private final LazyWidget<RotationEditBox> mRotateZInput;
+
     private final LazyWidget<Button> mFlipRotation;
     private final LazyWidget<Button> mCycleRotation;
     private final LazyWidget<Button> mSwitchSingleSided;
     private final LazyWidget<Button> mSwitchDoubleSided;
+    private final LazyWidget<Button> mSwitchDisableLod;
+    private final LazyWidget<Button> mSwitchEnableLod;
     private final LazyWidget<Button> mKeepAspectChecked;
     private final LazyWidget<Button> mKeepAspectUnchecked;
 
@@ -87,14 +94,17 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
     private boolean mInvalidOffsetZ;
     private ImageUrlStatus mImageUrlStatus;
 
-
     private final BlockPos blockPos;
     private final ProjectorBlockEntity.ProjectorBlockEntityData data;
 
     public ProjectorScreen(ProjectorContainerMenu projectorContainerMenu, Inventory inventory, Component component) {
         super(projectorContainerMenu, inventory, component);
+
+        final Button[] disableHolder = new Button[1];
+        final Button[] enableHolder  = new Button[1];
+
         this.imageWidth = 176;
-        this.imageHeight = 217;
+        this.imageHeight = 240;
         this.blockPos = projectorContainerMenu.getBlockPos();
         Level level = Minecraft.getInstance().level;
         if (level == null) {
@@ -243,6 +253,39 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 return input;
             });
 
+            this.mRotateXInput = LazyWidget.of(
+                toSignedString(this.data.getRotateX()),
+                RotationEditBox::getValue,
+                value -> {
+                    RotationEditBox input = new RotationEditBox(this.leftPos + 30, this.topPos + 214, 29, 16);
+                    input.setResponder(text -> this.data.setRotateX(parseFloatOrDefault(text, 0f)));
+                    input.setValue(value);
+                    return input;
+                }
+            );
+            
+            this.mRotateYInput = LazyWidget.of(
+                toSignedString(this.data.getRotateY()),
+                RotationEditBox::getValue,
+                value -> {
+                    RotationEditBox input = new RotationEditBox(this.leftPos + 84, this.topPos + 214, 29, 16);
+                    input.setResponder(text -> this.data.setRotateY(parseFloatOrDefault(text, 0f)));
+                    input.setValue(value);
+                    return input;
+                }
+            );
+            
+            this.mRotateZInput = LazyWidget.of(
+                toSignedString(this.data.getRotateZ()),
+                RotationEditBox::getValue,
+                value -> {
+                    RotationEditBox input = new RotationEditBox(this.leftPos + 138, this.topPos + 214, 29, 16);
+                    input.setResponder(text -> this.data.setRotateZ(parseFloatOrDefault(text, 0f)));
+                    input.setValue(value);
+                    return input;
+                }
+            );            
+
             this.mFlipRotation = LazyWidget.of(true, b -> b.visible, value -> {
                 Button button = new Button(this.leftPos + 117, this.topPos + 153, 179, 153, 18, 19, FLIP_TEXT, () -> {
                     ProjectorBlock.InternalRotation newRotation = this.mRotation.flip();
@@ -281,6 +324,36 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 return button;
             });
 
+            this.mSwitchDisableLod = LazyWidget.of(!data.isDisableLod(), 
+                button -> button.visible, 
+                isVisible -> {
+                    disableHolder[0] = new Button(leftPos + 9, topPos + 180, 179, 33, 18, 19,
+                        DISABLE_LOD_TEXT, () -> {
+                            data.setDisableLod(true);
+                            disableHolder[0].visible = false;
+                            enableHolder[0].visible = true;
+                        }
+                    );
+                    disableHolder[0].visible = isVisible;
+                    return disableHolder[0];
+                }
+            );
+        
+            this.mSwitchEnableLod = LazyWidget.of(data.isDisableLod(), 
+                button -> button.visible, 
+                isVisible -> {
+                    enableHolder[0] = new Button(leftPos + 9, topPos + 180, 179, 13, 18, 19,
+                        DISABLE_LOD_TEXT, () -> {
+                            data.setDisableLod(false);
+                            enableHolder[0].visible = false;
+                            disableHolder[0].visible = true;
+                        }
+                    );
+                    enableHolder[0].visible = isVisible;
+                    return enableHolder[0];
+                }
+            );
+        
             this.mKeepAspectChecked = LazyWidget.of(this.mKeepAspectRatio, b -> b.visible, value -> {
                 Button button = new Button(leftPos + 149, topPos + 49, 179, 93, 18, 19, KEEP_ASPECT_RATIO_TEXT, () -> {
                     if (this.mKeepAspectRatio) {
@@ -312,10 +385,15 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         this.mOffsetXInput = null;
         this.mOffsetYInput = null;
         this.mOffsetZInput = null;
+        this.mRotateXInput = null;
+        this.mRotateYInput = null;
+        this.mRotateZInput = null;
         this.mFlipRotation = null;
         this.mCycleRotation = null;
         this.mSwitchSingleSided = null;
         this.mSwitchDoubleSided = null;
+        this.mSwitchDisableLod = null;
+        this.mSwitchEnableLod = null;
         this.mKeepAspectChecked = null;
         this.mKeepAspectUnchecked = null;
     }
@@ -331,10 +409,15 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
             addRenderableWidget(mOffsetXInput.refresh());
             addRenderableWidget(mOffsetYInput.refresh());
             addRenderableWidget(mOffsetZInput.refresh());
+            addRenderableWidget(mRotateXInput.refresh());
+            addRenderableWidget(mRotateYInput.refresh());
+            addRenderableWidget(mRotateZInput.refresh());
             addRenderableWidget(mFlipRotation.refresh());
             addRenderableWidget(mCycleRotation.refresh());
             addRenderableWidget(mSwitchSingleSided.refresh());
             addRenderableWidget(mSwitchDoubleSided.refresh());
+            addRenderableWidget(mSwitchDisableLod.refresh());
+            addRenderableWidget(mSwitchEnableLod.refresh());
             addRenderableWidget(mKeepAspectChecked.refresh());
             addRenderableWidget(mKeepAspectUnchecked.refresh());
             setInitialFocus(mURLInput.get());
@@ -346,7 +429,7 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
         if (this.data != null) {
             if (!mURLInput.get().isFocused()) {
                 if (mSyncAspectRatio != SyncAspectRatio.SYNCED && !mInvalidWidth && !mInvalidHeight) {
-                    Slide slide = SlideState.getSlide(data.getLocation());
+                    Slide slide = SlideState.getSlide(data.getLocation(), !data.isDisableLod());
                     float aspect = slide == null ? Float.NaN : slide.getImageAspectRatio();
                     if (!Float.isNaN(aspect)) {
                         if (mSyncAspectRatio == SyncAspectRatio.SYNC_WIDTH_WITH_HEIGHT) {
@@ -448,6 +531,8 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
                 gui.renderTooltip(this.font, ROTATE_TEXT, offsetX, offsetY);
             } else if (offsetX >= 9 && offsetY >= 153 && offsetX < 27 && offsetY < 172) {
                 gui.renderTooltip(this.font, SINGLE_DOUBLE_SIDED_TEXT, offsetX, offsetY);
+            } else if (offsetX >= 9 && offsetY >= 175 && offsetX < 27 && offsetY < 194) {
+                gui.renderTooltip(this.font, DISABLE_LOD_TEXT, offsetX, offsetY);
             }
         }
 
@@ -503,6 +588,12 @@ public final class ProjectorScreen extends AbstractContainerScreen<ProjectorCont
             if (!this.mInvalidOffsetZ) {
                 networkData.setOffsetZ(this.mImageOffset.z());
             }
+
+            networkData.setRotateX(this.data.getRotateX());
+            networkData.setRotateY(this.data.getRotateY());
+            networkData.setRotateZ(this.data.getRotateZ());
+            networkData.setDisableLod(this.data.isDisableLod());
+
             networkData.setDoubleSided(this.mDoubleSided);
             networkData.setKeepAspectRatio(this.mKeepAspectRatio);
             Level level = Minecraft.getInstance().level;
