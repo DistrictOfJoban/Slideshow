@@ -65,6 +65,10 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         compoundTag.putFloat("OffsetX", this.projectorBlockEntityData.getOffsetX());
         compoundTag.putFloat("OffsetY", this.projectorBlockEntityData.getOffsetY());
         compoundTag.putFloat("OffsetZ", this.projectorBlockEntityData.getOffsetZ());
+        compoundTag.putFloat("RotateX", this.projectorBlockEntityData.getRotateX());
+        compoundTag.putFloat("RotateY", this.projectorBlockEntityData.getRotateY());
+        compoundTag.putFloat("RotateZ", this.projectorBlockEntityData.getRotateZ());
+        compoundTag.putBoolean("DisableLod", this.projectorBlockEntityData.isDisableLod());
         compoundTag.putBoolean("DoubleSided", this.projectorBlockEntityData.isDoubleSided());
         compoundTag.putBoolean("KeepAspectRatio", this.projectorBlockEntityData.isKeepAspectRatio());
     }
@@ -79,6 +83,10 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         this.projectorBlockEntityData.setOffsetX(compoundTag.getFloat("OffsetX"));
         this.projectorBlockEntityData.setOffsetY(compoundTag.getFloat("OffsetY"));
         this.projectorBlockEntityData.setOffsetZ(compoundTag.getFloat("OffsetZ"));
+        this.projectorBlockEntityData.setRotateX(compoundTag.getFloat("RotateX"));
+        this.projectorBlockEntityData.setRotateY(compoundTag.getFloat("RotateY"));
+        this.projectorBlockEntityData.setRotateZ(compoundTag.getFloat("RotateZ"));
+        this.projectorBlockEntityData.setDisableLod(compoundTag.getBoolean("DisableLod"));
         this.projectorBlockEntityData.setDoubleSided(compoundTag.getBoolean("DoubleSided"));
         this.projectorBlockEntityData.setKeepAspectRatio(compoundTag.getBoolean("KeepAspectRatio"));
     }
@@ -120,18 +128,30 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         rotation.transform(pose);
         rotation.transform(normal);
         pose.translate(-0.5F, 0.0F, 0.5F - this.projectorBlockEntityData.getHeight());
-        pose.translate(this.getProjectorBlockEntityData().getOffsetX(), -this.getProjectorBlockEntityData().getOffsetZ(), this.projectorBlockEntityData.getOffsetY());
-        pose.scale(this.projectorBlockEntityData.getWidth(), 1.0F, this.projectorBlockEntityData.getHeight());
-    }
+        pose.translate(this.projectorBlockEntityData.getOffsetX(), -this.projectorBlockEntityData.getOffsetZ(), this.projectorBlockEntityData.getOffsetY());
+    
+        float w = this.projectorBlockEntityData.getWidth();
+        float h = this.projectorBlockEntityData.getHeight();
+        pose.translate(w * 0.5f, h * 0.5f, 0f);
+    
+        float rx = (float)((this.projectorBlockEntityData.getRotateX() * Math.PI) / 180.0);
+        float ry = (float)((this.projectorBlockEntityData.getRotateY() * Math.PI) / 180.0);
+        float rz = (float)((this.projectorBlockEntityData.getRotateZ() * Math.PI) / 180.0);
+        pose.rotateX(rx).rotateY(ry).rotateZ(rz);
+        normal.rotateX(rx).rotateY(ry).rotateZ(rz);
+    
+        pose.translate(-w * 0.5f, -h * 0.5f, 0f);
+        pose.scale(w, 1.0f, h);
+    }    
 
     public static class ProjectorBlockEntityData {
         private String mLocation = "";
         private int mColor = 0xFFFFFFFF;
         private float mWidth = 1;
         private float mHeight = 1;
-        private float mOffsetX = 0;
-        private float mOffsetY = 0;
-        private float mOffsetZ = 0;
+        private float mOffsetX = 0, mOffsetY = 0, mOffsetZ = 0;
+        private float mRotateX = 0f, mRotateY = 0f, mRotateZ = 0f;
+        private boolean mDisableLod = false;
         private boolean mKeepAspectRatio = true;
         private boolean mDoubleSided = true;
 
@@ -147,6 +167,10 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
             copy.setOffsetX(mOffsetX);
             copy.setOffsetY(mOffsetY);
             copy.setOffsetZ(mOffsetZ);
+            copy.setRotateX(mRotateX);
+            copy.setRotateY(mRotateY);
+            copy.setRotateZ(mRotateZ);
+            copy.setDisableLod(!mDisableLod);
             copy.setKeepAspectRatio(mKeepAspectRatio);
             copy.setDoubleSided(mDoubleSided);
             return copy;
@@ -178,6 +202,22 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
 
         public float getOffsetZ() {
             return mOffsetZ;
+        }
+
+        public float getRotateX() {
+            return mRotateX;
+        }
+
+        public float getRotateY() {
+            return mRotateY;
+        }
+
+        public float getRotateZ() {
+            return mRotateZ;
+        }
+
+        public boolean isDisableLod() {
+            return mDisableLod;
         }
 
         public boolean isKeepAspectRatio() {
@@ -214,6 +254,22 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
 
         public void setOffsetZ(float mOffsetZ) {
             this.mOffsetZ = mOffsetZ;
+        }
+
+        public void setRotateX(float mRotateX) {
+            this.mRotateX = mRotateX;
+        }
+
+        public void setRotateY(float mRotateY) {
+            this.mRotateY = mRotateY;
+        }
+
+        public void setRotateZ(float mRotateZ) {
+            this.mRotateZ = mRotateZ;
+        }
+
+        public void setDisableLod(boolean mDisableLod) {
+            this.mDisableLod = mDisableLod;
         }
 
         public void setKeepAspectRatio(boolean mKeepAspectRatio) {
