@@ -3,9 +3,9 @@
 	"id": "slide_show",
 	"version": "${version}",
 	"name": "Slide Show",
-	"description": "Minecraft mod, adding a projector that can display online images.",
+	"description": "Minecraft mod, adding a projector that can display online images. Forked for use by The District of Joban",
 	"authors": [
-		"TeaConMC", "BloCamLimb", "3TUSK", "ustc-zzzz", "Jonathan", "zbx1425","AIDA64S"
+		"TeaConMC", "BloCamLimb", "3TUSK", "ustc-zzzz", "Jonathan", "zbx1425", "AIDA64S", "Dooji"
 	],
 	"contact": {
 		"homepage": "https://modrinth.com/mod/slideshow-fabric",
@@ -31,7 +31,7 @@
 	],
 	"depends": {
 		"fabricloader": "*",
-		"minecraft": ["1.21"],
+		"minecraft": ">=1.21",
 		"java": ">=21",
 		"fabric-api": "*"
 	}
