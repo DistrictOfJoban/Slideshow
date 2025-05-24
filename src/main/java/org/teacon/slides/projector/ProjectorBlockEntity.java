@@ -127,18 +127,21 @@ public final class ProjectorBlockEntity extends BlockEntity implements ExtendedS
         pose.translate(0.0f, 0.5f, 0.0f);
         rotation.transform(pose);
         rotation.transform(normal);
-        pose.translate(-0.5F, 0.0F, 0.5F - this.projectorBlockEntityData.getHeight());
-        pose.translate(this.projectorBlockEntityData.getOffsetX(), -this.projectorBlockEntityData.getOffsetZ(), this.projectorBlockEntityData.getOffsetY());
-    
-        float w = this.projectorBlockEntityData.getWidth();
-        float h = this.projectorBlockEntityData.getHeight();
-        pose.translate(w * 0.5f, h * 0.5f, 0f);
-    
+
         float rx = (float)((this.projectorBlockEntityData.getRotateX() * Math.PI) / 180.0);
         float ry = (float)((this.projectorBlockEntityData.getRotateY() * Math.PI) / 180.0);
         float rz = (float)((this.projectorBlockEntityData.getRotateZ() * Math.PI) / 180.0);
         pose.rotateX(rx).rotateY(ry).rotateZ(rz);
         normal.rotateX(rx).rotateY(ry).rotateZ(rz);
+
+        pose.translate(-0.5F, 0.0F, 0.5F - this.projectorBlockEntityData.getHeight());
+        pose.translate(this.projectorBlockEntityData.getOffsetX(), -this.projectorBlockEntityData.getOffsetZ(), this.projectorBlockEntityData.getOffsetY());
+
+        float w = this.projectorBlockEntityData.getWidth();
+        float h = this.projectorBlockEntityData.getHeight();
+        pose.translate(w * 0.5f, h * 0.5f, 0f);
+    
+
     
         pose.translate(-w * 0.5f, -h * 0.5f, 0f);
         pose.scale(w, 1.0f, h);
